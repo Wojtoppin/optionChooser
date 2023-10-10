@@ -78,6 +78,33 @@ const Index = (props) => {
     setChartExample1Data("data" + index);
   };
 
+  function fetchDataAndUpdateCharts() {
+    fetch('http://localhost:3040/data') // Replace with your API endpoint
+      .then((response) => response.json())
+      .then((data) => {
+        let names  = [];
+        let prices  = [];
+        data.map(element =>{
+          names.push(element.name)
+          prices.push(element.price)
+        })
+        const chart1Data = {
+          labels: names,
+          datasets: [
+            {
+              label: 'Price',
+              data: prices,
+            },
+          ],
+        };
+        chartExample1.data1 = (canvas) => chart1Data;
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
     if(code !== "" && direction !== ""){
@@ -113,7 +140,7 @@ const Index = (props) => {
 
 
   useEffect(() => {
-
+    fetchDataAndUpdateCharts()
     refreashData();
     refreashProducers();
   }, []);
@@ -133,10 +160,6 @@ const Index = (props) => {
                     </h6>
                     <h2 className="text-white mb-0">Cars</h2>
                   </div>
-
-
-
-
                   <div className="col">
                     <Nav className="justify-content-end" pills>
                       <NavItem>
@@ -147,67 +170,61 @@ const Index = (props) => {
                           href="#pablo"
                           onClick={(e) => toggleNavs(e, 1)}
                         >
-                          <span className="d-none d-md-block">Price</span>
-                          <span className="d-md-none">$</span>
+                          <span className="d-none d-md-block">All</span>
+                          <span className="d-md-none">All</span>
                         </NavLink>
                       </NavItem>
-
-
-
-
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
                             active: activeNav === 2,
                           })}
-                          data-toggle="tab"
                           href="#pablo"
                           onClick={(e) => toggleNavs(e, 2)}
+                        >
+                          <span className="d-none d-md-block">Price</span>
+                          <span className="d-md-none">$</span>
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          className={classnames("py-2 px-3", {
+                            active: activeNav === 3,
+                          })}
+                          data-toggle="tab"
+                          href="#pablo"
+                          onClick={(e) => toggleNavs(e, 3)}
                         >
                           <span className="d-none d-md-block">Course</span>
                           <span className="d-md-none">km</span>
                         </NavLink>
                       </NavItem>
-                      
-                      
-                      
-                      
-                      
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
-                            active: activeNav === 3,
+                            active: activeNav === 4,
                           })}
                           data-toggle="tab"
                           href="#pablo"
-                          onClick={(e) => toggleNavs(e, 3)}
+                          onClick={(e) => toggleNavs(e, 4)}
                         >
                           <span className="d-none d-md-block">AC</span>
                           <span className="d-md-none">AC</span>
                         </NavLink>
                       </NavItem>
-                      
-
-
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
-                            active: activeNav === 3,
+                            active: activeNav === 5,
                           })}
                           data-toggle="tab"
                           href="#pablo"
-                          onClick={(e) => toggleNavs(e, 3)}
+                          onClick={(e) => toggleNavs(e, 5)}
                         >
-                          <span className="d-none d-md-block">Average</span>
-                          <span className="d-md-none">AC</span>
+                          <span className="d-none d-md-block">AVG</span>
+                          <span className="d-md-none">AVG</span>
                         </NavLink>
                       </NavItem>
-
-
-
-
-
-
                     </Nav>
                   </div>
                 </Row>
@@ -215,11 +232,60 @@ const Index = (props) => {
               <CardBody>
                 {/* Chart */}
                 <div className="chart">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <Line
                     data={chartExample1[chartExample1Data]}
                     options={chartExample1.options}
                     getDatasetAtEvent={(e) => console.log(e)}
                   />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
               </CardBody>
             </Card>

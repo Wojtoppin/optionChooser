@@ -347,32 +347,13 @@ let chartExample1 = {
     },
   },
 
-
-
-
   data1: (canvas) => {
-    fetch(`http://localhost:3040/data`)
-            .then(response => response.json())
-            .then(data => {
-                setData(data);
-
-                data.map(element =>(
-                  setNameData(...nameData, element.name)
-                ))
-                
-                data.map(element =>(
-                  setPriceData(...priceData, element.price)
-                ))
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
     return {
-      labels: nameData,
+      labels: [1,2,3,4,5,6,7,8,9],
       datasets: [
         {
           label: "Price",
-          data: priceData,
+          data: [0, 10, 5, 15, 10, 30, 15, 0, 40],
         },
       ],
     };
@@ -384,6 +365,28 @@ let chartExample1 = {
         {
           label: "Performance",
           data: [0, 10, 5, 15, 10, 30, 15, 0, 40],
+        },
+      ],
+    };
+  },
+  data3: (canvas) => {
+    return {
+      labels: [1,2,3,4,5,6,7,8,9],
+      datasets: [
+        {
+          label: "Performance",
+          data: [0, 101, 5, 15, 20, 30, 15, 0, 40],
+        },
+      ],
+    };
+  },
+  data4: (canvas) => {
+    return {
+      labels: [1,2,3,4,5,6,7,8,9],
+      datasets: [
+        {
+          label: "Performance",
+          data: [0, 10, 5, 15, 10, 350, 15, 0, 40],
         },
       ],
     };
