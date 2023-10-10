@@ -54,6 +54,9 @@ const Index = (props) => {
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState("data1");
   const [cars, setCars] = useState({})
+  const [producers, setProducers] = useState({})
+  const [producersPercentage, setProducersPercentage] = useState()
+
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC"})
   
 
@@ -90,12 +93,30 @@ const Index = (props) => {
     });
   }
 
+  const refreashProducers = () =>{
+    let link = `http://localhost:3040/producent`;
+    
+    fetch(link)
+    .then(response => response.json())
+    .then(data => {
+        let sum = 0;
+        setProducers(data);
+        data.map(element =>{
+          sum += element.counted;
+        })
+        setProducersPercentage(sum);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+  }
+
 
   useEffect(() => {
 
     refreashData();
+    refreashProducers();
   }, []);
-
   return (
     <>
       <Header />
@@ -110,8 +131,12 @@ const Index = (props) => {
                     <h6 className="text-uppercase text-light ls-1 mb-1">
                       Overview
                     </h6>
-                    <h2 className="text-white mb-0">Sales value</h2>
+                    <h2 className="text-white mb-0">Cars</h2>
                   </div>
+
+
+
+
                   <div className="col">
                     <Nav className="justify-content-end" pills>
                       <NavItem>
@@ -122,10 +147,14 @@ const Index = (props) => {
                           href="#pablo"
                           onClick={(e) => toggleNavs(e, 1)}
                         >
-                          <span className="d-none d-md-block">Month</span>
-                          <span className="d-md-none">M</span>
+                          <span className="d-none d-md-block">Price</span>
+                          <span className="d-md-none">$</span>
                         </NavLink>
                       </NavItem>
+
+
+
+
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
@@ -135,10 +164,50 @@ const Index = (props) => {
                           href="#pablo"
                           onClick={(e) => toggleNavs(e, 2)}
                         >
-                          <span className="d-none d-md-block">Week</span>
-                          <span className="d-md-none">W</span>
+                          <span className="d-none d-md-block">Course</span>
+                          <span className="d-md-none">km</span>
                         </NavLink>
                       </NavItem>
+                      
+                      
+                      
+                      
+                      
+                      <NavItem>
+                        <NavLink
+                          className={classnames("py-2 px-3", {
+                            active: activeNav === 3,
+                          })}
+                          data-toggle="tab"
+                          href="#pablo"
+                          onClick={(e) => toggleNavs(e, 3)}
+                        >
+                          <span className="d-none d-md-block">AC</span>
+                          <span className="d-md-none">AC</span>
+                        </NavLink>
+                      </NavItem>
+                      
+
+
+                      <NavItem>
+                        <NavLink
+                          className={classnames("py-2 px-3", {
+                            active: activeNav === 3,
+                          })}
+                          data-toggle="tab"
+                          href="#pablo"
+                          onClick={(e) => toggleNavs(e, 3)}
+                        >
+                          <span className="d-none d-md-block">Average</span>
+                          <span className="d-md-none">AC</span>
+                        </NavLink>
+                      </NavItem>
+
+
+
+
+
+
                     </Nav>
                   </div>
                 </Row>
@@ -202,12 +271,13 @@ const Index = (props) => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                  <th scope="col" onClick={() =>(refreashData("ID", isASC["ID"]), toggleSortingOrder("ID"))}>ID</th>
+                  {/* <th scope="col" onClick={() =>(refreashData("ID", isASC["ID"]), toggleSortingOrder("ID"))}>ID</th> */}
                     <th scope="col" onClick={() =>(refreashData("name", isASC["name"]), toggleSortingOrder("name"))}>Car</th>
                     <th scope="col" onClick={() =>(refreashData("cena", isASC["cena"]), toggleSortingOrder("cena"))}>Price</th>
                     <th scope="col" onClick={() =>(refreashData("przebieg", isASC["przebieg"]), toggleSortingOrder("przebieg"))}>Course</th>
-                    <th scope="col" onClick={() =>(refreashData("klimatyzacja", isASC["klimatyzacja"]), toggleSortingOrder("klimatyzacja"))}>Air conditioning</th>
-                    <th scope="col" onClick={() =>(refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]), toggleSortingOrder("sredni_koszt_naprawy"))}>Average repair cost</th>
+                    <th scope="col" onClick={() =>(refreashData("klimatyzacja", isASC["klimatyzacja"]), toggleSortingOrder("klimatyzacja"))}>AC</th>
+                    <th scope="col" onClick={() =>(refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]), toggleSortingOrder("sredni_koszt_naprawy"))}>Avg repair cost</th>
+                    <th scope="col">Producer</th>
                     
                   </tr>
                 </thead>
@@ -216,23 +286,16 @@ const Index = (props) => {
                     {Array.isArray(cars) && cars.map(element =>{
                       return(
                         <tr>
-                          <th scope="row">{element.ID}</th>
+                          {/* <th scope="row">{element.ID}</th> */}
                           <th scope="row">{element.name}</th>
                           <td>{element.cena}</td>
                           <td>{element.przebieg}</td>
                           <td>{element.klimatyzacja}</td>
                           <td>{element.sredni_koszt_naprawy}</td>
+                          <td>{element.producer}</td>
                         </tr>
                     )})}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                    {/*-------------------------------------------------------------------------------------------*/}
-                  
+                    
                   
                 </tbody>
               </Table>
@@ -243,7 +306,7 @@ const Index = (props) => {
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Social traffic</h3>
+                    <h3 className="mb-0">Producers</h3>
                   </div>
                   <div className="col text-right">
                     <Button
@@ -260,89 +323,35 @@ const Index = (props) => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">Referral</th>
-                    <th scope="col">Visitors</th>
+                    <th scope="col">Producer</th>
+                    <th scope="col">cars</th>
                     <th scope="col" />
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">Facebook</th>
-                    <td>1,480</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">60%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="60"
-                            barClassName="bg-gradient-danger"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Facebook</th>
-                    <td>5,480</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">70%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="70"
-                            barClassName="bg-gradient-success"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Google</th>
-                    <td>4,807</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">80%</span>
-                        <div>
-                          <Progress max="100" value="80" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Instagram</th>
-                    <td>3,678</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">75%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="75"
-                            barClassName="bg-gradient-info"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">twitter</th>
-                    <td>2,645</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">30%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="30"
-                            barClassName="bg-gradient-warning"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                    
+                    {Array.isArray(producers) && producers.map(element =>{
+                      return(
+                        <tr>
+                          {/* <th scope="row">{element.ID}</th> */}
+                          <th scope="row">{element.producer}</th>
+                          <td>{element.counted}</td>
+                          <td>
+                            <div className="d-flex align-items-center">
+                              <span className="mr-2">{(element.counted/producersPercentage*100).toFixed(1)}%</span>
+                              <div>
+                                <Progress
+                                  max="100"
+                                  value={(element.counted/producersPercentage*100).toFixed(1)}
+                                  barClassName="bg-gradient-info"
+                                />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                    )})}
                 </tbody>
+                
               </Table>
             </Card>
           </Col>

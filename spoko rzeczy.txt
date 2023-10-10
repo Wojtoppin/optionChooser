@@ -1,2 +1,7 @@
                       <i className="fas fa-arrow-up text-success mr-3" /> 46,53%
                       <i className="fas fa-arrow-down text-warning mr-3" />{" "}
+
+
+                            barClassName="bg-gradient-success"
+                                  barClassName="bg-gradient-danger"
+                            barClassName="bg-gradient-info"       warning

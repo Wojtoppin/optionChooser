@@ -16,10 +16,12 @@
 
 */
 const Chart = require("chart.js");
+const { useEffect, useState } = require("react");
 //
 // Chart extension for making the bars rounded
 // Code from: https://codepen.io/jedtrow/full/ygRYgo
 //
+
 
 Chart.elements.Rectangle.prototype.draw = function () {
   var ctx = this._chart.ctx;
@@ -183,6 +185,7 @@ var colors = {
 
 // Chart.js global options
 function chartOptions() {
+  
   // Options
   var options = {
     defaults: {
@@ -343,24 +346,44 @@ let chartExample1 = {
       },
     },
   },
+
+
+
+
   data1: (canvas) => {
+    fetch(`http://localhost:3040/data`)
+            .then(response => response.json())
+            .then(data => {
+                setData(data);
+
+                data.map(element =>(
+                  setNameData(...nameData, element.name)
+                ))
+                
+                data.map(element =>(
+                  setPriceData(...priceData, element.price)
+                ))
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
     return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels: nameData,
       datasets: [
         {
-          label: "Performance",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60],
+          label: "Price",
+          data: priceData,
         },
       ],
     };
   },
   data2: (canvas) => {
     return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels: [1,2,3,4,5,6,7,8,9],
       datasets: [
         {
           label: "Performance",
-          data: [0, 20, 5, 25, 10, 30, 15, 40, 40],
+          data: [0, 10, 5, 15, 10, 30, 15, 0, 40],
         },
       ],
     };
