@@ -1,0 +1,2 @@
+                      <i className="fas fa-arrow-up text-success mr-3" /> 46,53%
+                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
