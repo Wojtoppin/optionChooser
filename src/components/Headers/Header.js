@@ -19,14 +19,13 @@
 // reactstrap components
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
-const Header = () => {
+const Header = (props) => {
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
         <Container fluid>
           <div className="header-body">
-            {/* Card stats */}
-            <Row>
+            {props.test && <Row>
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
@@ -36,51 +35,20 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Traffic
+                          Price
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">
-                          350,897
-                        </span>
+                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                          <i className="fas fa-chart-bar" />
-                        </div>
-                      </Col>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
-                        <i className="fa fa-arrow-up" /> 3.48%
-                      </span>{" "}
-                      <span className="text-nowrap">Since last month</span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          New users
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">2,356</span>
-                      </div>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
-                          <i className="fas fa-chart-pie" />
+                          <i className="ni ni-money-coins" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-danger mr-2">
-                        <i className="fas fa-arrow-down" /> 3.48%
-                      </span>{" "}
-                      <span className="text-nowrap">Since last week</span>
+                         {props.csV}
+                      </span>
                     </p>
                   </CardBody>
                 </Card>
@@ -94,21 +62,51 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Sales
+                          Course
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">924</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          <input type="range" min={0} max={100} value={props.psV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)}  onChange={(((event)=>props.handleSliderChange(event,2)))}/>
+                          </span>
+                      </div>
+                      <Col className="col-auto">
+                        <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                          <i className="ni ni-world" />
+                        </div>
+                      </Col>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                        {props.psV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          Air Conditioning
+                        </CardTitle>
+                        <span className="h2 font-weight-bold mb-0">
+                          <input type="range" min={0} max={100} value={props.klsV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)}  onChange={(((event)=>props.handleSliderChange(event,3)))}/>
+                        </span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                          <i className="fas fa-users" />
+                          <i className="ni ni-sound-wave" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-warning mr-2">
-                        <i className="fas fa-arrow-down" /> 1.10%
-                      </span>{" "}
-                      <span className="text-nowrap">Since yesterday</span>
+                        {props.klsV}
+                      </span>
                     </p>
                   </CardBody>
                 </Card>
@@ -122,26 +120,27 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Performance
+                          Average repair cost
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">49,65%</span>
+                        <span className="h2 font-weight-bold mb-0">
+                        <input type="range" min={0} max={100} value={props.kosV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)}  onChange={(((event)=>props.handleSliderChange(event,4)))}/>
+                        </span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-info text-white rounded-circle shadow">
-                          <i className="fas fa-percent" />
+                          <i className="ni ni-settings" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 12%
-                      </span>{" "}
-                      <span className="text-nowrap">Since last month</span>
+                      <span className="text-danger mr-2">
+                        {props.kosV}
+                      </span>
                     </p>
                   </CardBody>
                 </Card>
               </Col>
-            </Row>
+            </Row>}
           </div>
         </Container>
       </div>

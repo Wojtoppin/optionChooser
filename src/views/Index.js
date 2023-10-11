@@ -24,6 +24,9 @@ import classnames from "classnames";
 import Chart from "chart.js";
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
+
+import Best_Element from "./Best_Element";
+
 // reactstrap components
 import {
   Button,
@@ -51,16 +54,19 @@ import {
 import Header from "components/Headers/Header.js";
 
 const Index = (props) => {
+  const [cenaSliderValue, setCenaSliderValue] = useState(50);
+  const [przebiegSliderValue, setPrzebiegSliderValue] = useState(50);
+  const [klimatyzacjaSliderValue, setKlimatyzacjaSliderValue] = useState(50);
+  const [kosztSliderValue, setKosztSliderValue] = useState(50);
   const [activeNav, setActiveNav] = useState(1);
-  const [chartExample1Data, setChartExample1Data] = useState("data1");
+  const [weight, setWeights] = useState({cena:cenaSliderValue, przebieg:przebiegSliderValue, klimatyzacja:klimatyzacjaSliderValue, sredni_koszt_naprawy:kosztSliderValue})
   const [cars, setCars] = useState({})
   const [producers, setProducers] = useState({})
   const [producersPercentage, setProducersPercentage] = useState()
-
+  const [lineData, setLineData] = useState({});
+  const [barData, setBarData] = useState({});
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC"})
   
-
-
   const toggleSortingOrder = (columnName) => {
     const currentOrder = isASC[columnName];
     const newOrder = currentOrder === "ASC" ? "DESC" : "ASC";
@@ -75,35 +81,136 @@ const Index = (props) => {
   const toggleNavs = (e, index) => {
     e.preventDefault();
     setActiveNav(index);
-    setChartExample1Data("data" + index);
+    fetchDataAndUpdateCharts(index)
   };
 
-  function fetchDataAndUpdateCharts() {
-    fetch('http://localhost:3040/data') // Replace with your API endpoint
+  function fetchDataAndUpdateCharts(index) {
+    
+    fetch('http://localhost:3040/data')
       .then((response) => response.json())
       .then((data) => {
-        let names  = [];
-        let prices  = [];
-        data.map(element =>{
-          names.push(element.name)
-          prices.push(element.price)
+        console.log(weight)
+        const test = new Best_Element();
+        let results = test.onLoad(data, weight).winning_data;
+    
+        let names = [];
+        let sum = [];
+        let prices = [];
+        let km = [];
+        let AC = [];
+        let repair = [];
+        results.map(element =>{
+          names.push(element.name);
+          sum.push(element.sum);
+          prices.push(element.cena);
+          km.push(element.przebieg);
+          AC.push(element.klimatyzacja);
+          repair.push(element.sredni_koszt_naprawy);
         })
-        const chart1Data = {
-          labels: names,
+        let chart1Data = {};
+        let chart2Data = {};
+        let new_label="";
+        let new_data = [];
+        let new_bC = "";
+        let selected_array = [];
+
+        if (index === 1){
+          chart1Data = {
+            labels: names,
+            datasets: [
+              {
+                label: "Sum",
+                data: sum,
+                borderColor: 'rgba(255, 0, 0, 0.65)',
+                
+              },
+              {
+                label: "Price",
+                data: prices,
+                borderColor: 'rgba(255, 0, 141, 0.65)',
+              },
+              {
+                label: "Course",
+                data: km,
+                borderColor: 'rgba(255, 119, 0, 0.65)',
+              },
+              {
+                label: "Air Conditioning",
+                data: AC,
+                borderColor: 'rgba(248, 255, 0, 0.65)',
+              },
+              {
+                label: "Repair Price",
+                data: repair,
+                borderColor: 'rgba(0, 0, 255, 0.65)',
+              },
+            ],
+          };
+          selected_array = sum;
+          
+        }
+        if (index === 2){
+          new_label = "Price"
+          new_data = prices;
+          new_bC = "rgba(255, 0, 141, 0.65)"
+          selected_array = prices;
+
+        }
+        if (index === 3){
+          new_label = "Course"
+          new_data = km;
+          new_bC = "rgba(255, 119, 0, 0.65)"
+          selected_array = km;
+
+        }
+        if (index === 4){
+          new_label = "Air Conditioning"
+          new_data = AC;
+          new_bC = 'rgba(248, 255, 0, 0.65)'
+          selected_array = AC;
+
+        }
+        if (index === 5){
+          new_label = "Repair Price"
+          new_data = repair;
+          new_bC = 'rgba(0, 0, 255, 0.65)'
+          selected_array = repair;
+
+        }
+        if(Object.keys(chart1Data).length === 0){
+          chart1Data = {
+            labels: names,
+            datasets: [
+              {
+                label: new_label,
+                data: new_data,
+                borderColor: new_bC,
+              },
+            ],
+          };
+        }
+        chart2Data = {
+          labels: [names[0], names[1], names[2], names[3], names[4], names[5]],
           datasets: [
             {
-              label: 'Price',
-              data: prices,
+              label: "Sales",
+              data: [selected_array[0], selected_array[1], selected_array[2], selected_array[3], selected_array[4], selected_array[5]],
+              maxBarThickness: 10,
             },
           ],
         };
+
         chartExample1.data1 = (canvas) => chart1Data;
+        setLineData(chart1Data);
+        
+        chartExample2.data2 = (canvas) => chart2Data;
+        setBarData(chart2Data);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }
 
+  }
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -139,14 +246,52 @@ const Index = (props) => {
   }
 
 
+  const handleSliderChange = (event, num) => {
+    const newValue = parseInt(event.target.value);
+    if(num === 1){
+        setCenaSliderValue(newValue);
+        setWeights({["cena"]:101-newValue, ["przebieg"]:101-przebiegSliderValue, ["klimatyzacja"]:101-klimatyzacjaSliderValue, ["sredni_koszt_naprawy"]:101-kosztSliderValue });
+
+    }else{
+        if(num === 2){
+            setPrzebiegSliderValue(newValue);
+            setWeights({["cena"]:101-cenaSliderValue, ["przebieg"]:101-newValue, ["klimatyzacja"]:101-klimatyzacjaSliderValue, ["sredni_koszt_naprawy"]:101-kosztSliderValue });
+
+        }else{
+            if(num === 3){
+              setKlimatyzacjaSliderValue(newValue);
+              setWeights({["cena"]:101-cenaSliderValue, ["przebieg"]:101-przebiegSliderValue, ["klimatyzacja"]:101-newValue, ["sredni_koszt_naprawy"]:101-kosztSliderValue });
+            }else{
+              setKosztSliderValue(newValue);
+              setWeights({["cena"]:101-cenaSliderValue, ["przebieg"]:101-przebiegSliderValue, ["klimatyzacja"]:101-klimatyzacjaSliderValue, ["sredni_koszt_naprawy"]:101-newValue });
+        }
+    }
+    
+  }};
+
+
   useEffect(() => {
-    fetchDataAndUpdateCharts()
+    fetchDataAndUpdateCharts(1);
     refreashData();
     refreashProducers();
   }, []);
   return (
     <>
-      <Header />
+      <Header 
+      fetchDataAndUpdateCharts={fetchDataAndUpdateCharts}
+      handleSliderChange={handleSliderChange}
+      csV = {cenaSliderValue}
+      psV = {przebiegSliderValue}
+      klsV = {klimatyzacjaSliderValue}
+      kosV = {kosztSliderValue}
+      
+      scsV = {setCenaSliderValue}
+      spsV = {setPrzebiegSliderValue}
+      sklsV = {setKlimatyzacjaSliderValue}
+      skosV = {setKosztSliderValue}
+
+      test={true}
+      />
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
@@ -195,7 +340,7 @@ const Index = (props) => {
                           href="#pablo"
                           onClick={(e) => toggleNavs(e, 3)}
                         >
-                          <span className="d-none d-md-block">Course</span>
+                          <span className="d-none d-md-block">km</span>
                           <span className="d-md-none">km</span>
                         </NavLink>
                       </NavItem>
@@ -230,62 +375,12 @@ const Index = (props) => {
                 </Row>
               </CardHeader>
               <CardBody>
-                {/* Chart */}
                 <div className="chart">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                   <Line
-                    data={chartExample1[chartExample1Data]}
+                    data={lineData}
                     options={chartExample1.options}
                     getDatasetAtEvent={(e) => console.log(e)}
                   />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 </div>
               </CardBody>
             </Card>
@@ -306,7 +401,7 @@ const Index = (props) => {
                 {/* Chart */}
                 <div className="chart">
                   <Bar
-                    data={chartExample2.data}
+                    data={barData}
                     options={chartExample2.options}
                   />
                 </div>

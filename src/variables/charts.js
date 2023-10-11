@@ -321,8 +321,8 @@ let chartExample1 = {
           },
           ticks: {
             callback: function (value) {
-              if (!(value % 10)) {
-                return "$" + value + "k";
+              if (!(value % 1)) {
+                return value;
               }
             },
           },
@@ -334,13 +334,13 @@ let chartExample1 = {
         label: function (item, data) {
           var label = data.datasets[item.datasetIndex].label || "";
           var yLabel = item.yLabel;
-          var content = "";
+          var content = " ";
 
           if (data.datasets.length > 1) {
             content += label;
           }
 
-          content += "$" + yLabel + "k";
+          content += "" + yLabel + " ";
           return content;
         },
       },
@@ -358,39 +358,6 @@ let chartExample1 = {
       ],
     };
   },
-  data2: (canvas) => {
-    return {
-      labels: [1,2,3,4,5,6,7,8,9],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 10, 5, 15, 10, 30, 15, 0, 40],
-        },
-      ],
-    };
-  },
-  data3: (canvas) => {
-    return {
-      labels: [1,2,3,4,5,6,7,8,9],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 101, 5, 15, 20, 30, 15, 0, 40],
-        },
-      ],
-    };
-  },
-  data4: (canvas) => {
-    return {
-      labels: [1,2,3,4,5,6,7,8,9],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 10, 5, 15, 10, 350, 15, 0, 40],
-        },
-      ],
-    };
-  },
 };
 
 // Example 2 of Chart inside src/views/Index.js (Total orders - Card)
@@ -401,7 +368,7 @@ let chartExample2 = {
         {
           ticks: {
             callback: function (value) {
-              if (!(value % 10)) {
+              if (!(value % 1)) {
                 //return '$' + value + 'k'
                 return value;
               }
