@@ -142,6 +142,22 @@ const Header = (props) => {
                 </Card>
               </Col>
             </Row>}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             {props.tables && <Row>
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
@@ -173,15 +189,19 @@ const Header = (props) => {
                         <CardTitle
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
-                        >
-                          Price
+                        >Price
                         </CardTitle>
-                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+                        <input
+                          type="range"
+                          min={props.priceMin}
+                          max={props.priceMax}
+                          value={props.filterPrice}
+                          onChange={(event) => props.handleSliderChange(event, 1)}/>
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-danger mr-2">
-                         {props.csV}
+                         {props.filterPrice}
                       </span>
                     </p>
                   </CardBody>
@@ -198,7 +218,7 @@ const Header = (props) => {
                         >
                           course
                         </CardTitle>
-                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,2)}/>
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
@@ -242,7 +262,7 @@ const Header = (props) => {
                         >
                           Repair Cost
                         </CardTitle>
-                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,3)}/>
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">

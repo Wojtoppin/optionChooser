@@ -90,6 +90,7 @@ const Index = (props) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(weight)
+        
         const test = new Best_Element();
         let results = test.onLoad(data, weight).winning_data;
     

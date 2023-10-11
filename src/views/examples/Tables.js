@@ -46,6 +46,9 @@ const Tables = () => {
   const [cars, setCars] = useState({});
   const [filteredCars, setFilteredCars] = useState({});
   const [filterText, setFilterText] = useState('');
+  const [filterPrice, setFilterPrice] = useState(0);
+  const [priceMin, setPriceMin] = useState(0);
+  const [priceMax, setPriceMax] = useState(100);
 
 
   const toggleSortingOrder = (columnName) => {
@@ -54,6 +57,10 @@ const Tables = () => {
     setIsASC({ ...isASC, [columnName]: newOrder });
     console.log(isASC)
   };
+
+
+
+
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -70,6 +77,33 @@ const Tables = () => {
         console.error('Error fetching data:', error);
     });
   }
+
+  const minMax = () =>{
+    fetch(`http://localhost:3040/data`)
+    .then(response => response.json())
+    .then(data => {
+      let maxPrice = 0;
+      data.map(element =>{
+        if(element.cena > maxPrice){
+          maxPrice = element.cena;
+        }
+      })
+      let minPrice = maxPrice;
+      data.map(element=>{
+        if (element.cena < minPrice){
+          minPrice = element.cena;
+          setFilterPrice(maxPrice);
+        }
+      })
+      setPriceMin(minPrice);
+      setPriceMax(maxPrice);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+    
+  }
+
   const refreashProducers = () =>{
     let link = `http://localhost:3040/producent`;
     
@@ -77,24 +111,48 @@ const Tables = () => {
     .then(response => response.json())
     .then(data => {
         setProducers(data);
+
     })
     .catch(error => {
         console.error('Error fetching data:', error);
     });
   }
 
+
+
+
+
+
   const filterCars = () =>{
-    setFilteredCars(cars.filter(car => car.name.toLowerCase().includes(filterText.toLowerCase())));
+    let new_car_data = cars.filter(car => car.name.toLowerCase().includes(filterText.toLowerCase()) && car.cena <= filterPrice);
+    console.log(new_car_data);
+    setFilteredCars(new_car_data);
   }
+
   const handleFilteredText = (event) =>{
     setFilterText(event.target.value)
-
   }
 
+
+
+  const handleSliderChange = (event, num) => {
+    const newValue = parseInt(event.target.value);
+    if(num === 1){
+      setFilterPrice(newValue);
+      filterCars();
+
+    }
+  };
+
+
+
+
+  
 
   useEffect(() => {
     refreashData();
     refreashProducers();
+    minMax();
   }, []);
 
 
@@ -108,9 +166,13 @@ const Tables = () => {
     <>
       <Header
         filterCars={filterCars}
+        priceMin={priceMin}
+        priceMax={priceMax}
+        filterPrice={filterPrice}
         producers={producers}
         tables={true}
         filterText={filterText}
+        handleSliderChange={handleSliderChange}
         handleFilteredText={handleFilteredText}/>
 
       {/* Page content */}

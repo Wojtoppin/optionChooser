@@ -32,7 +32,7 @@ import {
 const AdminNavbar = () => {
   return (
     <>
-      <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
+      {/* <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
         <Container className="px-4">
           <NavbarBrand to="/" tag={Link}>
             <img
@@ -98,7 +98,7 @@ const AdminNavbar = () => {
             </Nav>
           </UncontrolledCollapse>
         </Container>
-      </Navbar>
+      </Navbar> */}
     </>
   );
 };
