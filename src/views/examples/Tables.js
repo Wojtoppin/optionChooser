@@ -41,8 +41,11 @@ import {
 import Header from "components/Headers/Header.js";
 
 const Tables = () => {
-  const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC"})
-  const [cars, setCars] = useState({})
+  const [producers, setProducers] = useState({});
+  const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"});
+  const [cars, setCars] = useState({});
+  const [filteredCars, setFilteredCars] = useState({});
+  const [filterText, setFilterText] = useState('');
 
 
   const toggleSortingOrder = (columnName) => {
@@ -61,15 +64,37 @@ const Tables = () => {
     .then(response => response.json())
     .then(data => {
         setCars(data);
+        setFilteredCars(data);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+  }
+  const refreashProducers = () =>{
+    let link = `http://localhost:3040/producent`;
+    
+    fetch(link)
+    .then(response => response.json())
+    .then(data => {
+        setProducers(data);
     })
     .catch(error => {
         console.error('Error fetching data:', error);
     });
   }
 
+  const filterCars = () =>{
+    setFilteredCars(cars.filter(car => car.name.toLowerCase().includes(filterText.toLowerCase())));
+  }
+  const handleFilteredText = (event) =>{
+    setFilterText(event.target.value)
+
+  }
+
 
   useEffect(() => {
     refreashData();
+    refreashProducers();
   }, []);
 
 
@@ -81,7 +106,13 @@ const Tables = () => {
   
   return (
     <>
-      <Header />
+      <Header
+        filterCars={filterCars}
+        producers={producers}
+        tables={true}
+        filterText={filterText}
+        handleFilteredText={handleFilteredText}/>
+
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
@@ -89,7 +120,7 @@ const Tables = () => {
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
-                <h3 className="mb-0">Card tables</h3>
+                <h3 className="mb-0">All cars</h3>
               </CardHeader>
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
@@ -99,12 +130,12 @@ const Tables = () => {
                     <th scope="col" onClick={() =>(refreashData("przebieg", isASC["przebieg"]), toggleSortingOrder("przebieg"))}>Course</th>
                     <th scope="col" onClick={() =>(refreashData("klimatyzacja", isASC["klimatyzacja"]), toggleSortingOrder("klimatyzacja"))}>AC</th>
                     <th scope="col" onClick={() =>(refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]), toggleSortingOrder("sredni_koszt_naprawy"))}>Avg repair cost</th>
-                    <th scope="col">Producer</th>
+                    <th scope="col" onClick={() =>(refreashData("producer", isASC["producer"]), toggleSortingOrder("producer"))}>Producer</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(cars) && cars.map(element =>{
+                {Array.isArray(filteredCars) && filteredCars.map(element =>{
                       return(
                         <tr>
                           {/* <th scope="row">{element.ID}</th> */}

@@ -290,7 +290,7 @@ const Index = (props) => {
       sklsV = {setKlimatyzacjaSliderValue}
       skosV = {setKosztSliderValue}
 
-      test={true}
+      index={true}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -438,7 +438,8 @@ const Index = (props) => {
                     <th scope="col" onClick={() =>(refreashData("przebieg", isASC["przebieg"]), toggleSortingOrder("przebieg"))}>Course</th>
                     <th scope="col" onClick={() =>(refreashData("klimatyzacja", isASC["klimatyzacja"]), toggleSortingOrder("klimatyzacja"))}>AC</th>
                     <th scope="col" onClick={() =>(refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]), toggleSortingOrder("sredni_koszt_naprawy"))}>Avg repair cost</th>
-                    <th scope="col">Producer</th>
+                    <th scope="col" onClick={() =>(refreashData("producer", isASC["producer"]), toggleSortingOrder("producer"))}>Producer</th>
+
                     
                   </tr>
                 </thead>

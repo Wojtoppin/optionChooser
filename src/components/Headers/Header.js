@@ -20,12 +20,13 @@
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
 const Header = (props) => {
+
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
         <Container fluid>
           <div className="header-body">
-            {props.test && <Row>
+            {props.index && <Row>
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
@@ -135,6 +136,150 @@ const Header = (props) => {
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-danger mr-2">
                         {props.kosV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>}
+            {props.tables && <Row>
+              <Col lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          Model
+                        </CardTitle>
+                        <input type="text" name="name" value={props.filterText} onChange={(event)=>props.handleFilteredText(event)} onKeyUp={props.filterCars}/>
+                      </div>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                         {props.csV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="2">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          Price
+                        </CardTitle>
+                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+                      </div>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                         {props.csV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="2">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          course
+                        </CardTitle>
+                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+                      </div>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                         {props.csV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="1">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          AC
+                        </CardTitle>
+                        <input type="checkbox" />
+                      </div>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                         {props.csV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="2">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          Repair Cost
+                        </CardTitle>
+                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+                      </div>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                         {props.csV}
+                      </span>
+                    </p>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col lg="6" xl="2">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <div className="col">
+                        <CardTitle
+                          tag="h5"
+                          className="text-uppercase text-muted mb-0"
+                        >
+                          producer
+                        </CardTitle>
+                        <select>
+                          <option value="null"></option>
+                            {Array.isArray(props.producers) &&
+                              props.producers !== undefined &&
+                              props.producers.map((element) => (
+                              <option key={element.ID} value={element.ID}>
+                                {element.producer}
+                              </option>
+                            ))}      
+                          <option value="value3">Option 3</option>
+                        </select>
+                      </div>
+                    </Row>
+                    <p className="mt-3 mb-0 text-muted text-sm">
+                      <span className="text-danger mr-2">
+                         {props.csV}
                       </span>
                     </p>
                   </CardBody>
