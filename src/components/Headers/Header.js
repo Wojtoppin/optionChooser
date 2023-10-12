@@ -144,20 +144,6 @@ const Header = (props) => {
             </Row>}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             {props.tables && <Row>
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
@@ -196,12 +182,14 @@ const Header = (props) => {
                           min={props.priceMin}
                           max={props.priceMax}
                           value={props.filterPrice}
+                          onMouseUp={(event) => props.handleSliderChange(event, 1)}
                           onChange={(event) => props.handleSliderChange(event, 1)}/>
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
+                      {"Less than: "}
                       <span className="text-danger mr-2">
-                         {props.filterPrice}
+                         {props.filterPrice}$
                       </span>
                     </p>
                   </CardBody>
@@ -218,12 +206,21 @@ const Header = (props) => {
                         >
                           course
                         </CardTitle>
-                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,2)}/>
+                        
+                        <input
+                          type="range"
+                          min={props.courseMin}
+                          max={props.courseMax}
+                          value={props.filterCourse}
+                          onMouseUp={(event) => props.handleSliderChange(event, 2)}
+                          onChange={(event) => props.handleSliderChange(event, 2)}/>
+
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
+                      {"Less than: "}
                       <span className="text-danger mr-2">
-                         {props.csV}
+                         {props.filterCourse} km
                       </span>
                     </p>
                   </CardBody>
@@ -262,12 +259,21 @@ const Header = (props) => {
                         >
                           Repair Cost
                         </CardTitle>
-                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,3)}/>
+                        
+                        <input
+                          type="range"
+                          min={props.repairMin}
+                          max={props.repairMax}
+                          value={props.filterRepair}
+                          onMouseUp={(event) => props.handleSliderChange(event, 3)}
+                          onChange={(event) => props.handleSliderChange(event, 3)}/>
+
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
+                      {"Less than "}
                       <span className="text-danger mr-2">
-                         {props.csV}
+                         {props.filterRepair}$
                       </span>
                     </p>
                   </CardBody>
@@ -284,17 +290,16 @@ const Header = (props) => {
                         >
                           producer
                         </CardTitle>
-                        <select>
-                          <option value="null"></option>
-                            {Array.isArray(props.producers) &&
-                              props.producers !== undefined &&
-                              props.producers.map((element) => (
-                              <option key={element.ID} value={element.ID}>
-                                {element.producer}
-                              </option>
-                            ))}      
-                          <option value="value3">Option 3</option>
-                        </select>
+                        <select onChange={(e) => props.setFilterProducerFunction(e.target.value)}>
+                        <option value="null">All Producers</option>
+                        {Array.isArray(props.producers) &&
+                          props.producers !== undefined &&
+                          props.producers.map((element) => (
+                            <option key={element.ID} value={element.producer}>
+                              {element.producer}
+                            </option>
+                          ))}
+                      </select>
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">

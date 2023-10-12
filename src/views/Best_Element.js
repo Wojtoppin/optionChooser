@@ -1,7 +1,6 @@
 class Best_Element{
     //główna funkcja
     onLoad(data, weights){
-        console.log(weights)
 
         this.elementData = data;
 
@@ -68,6 +67,10 @@ class Best_Element{
         // })
         let winning_data = [];
 
+
+
+
+
         this.elementData.forEach(element => {
             let sum = 0;
             let element_data = {};
@@ -104,16 +107,16 @@ class Best_Element{
             
             // ustalenie kto jest wygranyms
         });
+        let countWeight = 0;
         let max_sum = 0;
-        winning_data.map(element=>{
-            if(element["sum"] > max_sum){
-
-                max_sum = element["sum"];
+        for (let element in weight) {
+            if(element != 0){
+                countWeight++;
             }
-        });
+        }
 
         winning_data.map(element=>{
-            element["sum"] = element["sum"]/max_sum;
+            element["sum"] = element["sum"]/countWeight;
         });
         winning_data.sort((a,b)=> b["sum"] - a["sum"])
 

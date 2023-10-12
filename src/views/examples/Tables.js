@@ -43,12 +43,21 @@ import Header from "components/Headers/Header.js";
 const Tables = () => {
   const [producers, setProducers] = useState({});
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"});
-  const [cars, setCars] = useState({});
+  const [cars, setCars] = useState([]);
+
   const [filteredCars, setFilteredCars] = useState({});
   const [filterText, setFilterText] = useState('');
   const [filterPrice, setFilterPrice] = useState(0);
+  const [filterCourse, setFilterCourse] = useState(0);
+  const [filterRepair, setFilterRepair] = useState(0);
+  const [filterProducer, setFilterProducer] = useState("null");
+
   const [priceMin, setPriceMin] = useState(0);
-  const [priceMax, setPriceMax] = useState(100);
+  const [priceMax, setPriceMax] = useState(0);
+  const [courseMin, setCourseMin] = useState(0);
+  const [courseMax, setCourseMax] = useState(0);
+  const [repairMin, setRepairMin] = useState(0);
+  const [repairMax, setRepairMax] = useState(0);
 
 
   const toggleSortingOrder = (columnName) => {
@@ -83,20 +92,45 @@ const Tables = () => {
     .then(response => response.json())
     .then(data => {
       let maxPrice = 0;
+      let maxCourse = 0;
+      let maxRepair = 0;
       data.map(element =>{
         if(element.cena > maxPrice){
           maxPrice = element.cena;
         }
+        if(element.przebieg > maxCourse){
+          maxCourse = element.przebieg;
+        }
+        if(element.sredni_koszt_naprawy > maxRepair){
+          maxRepair = element.sredni_koszt_naprawy;
+        }
       })
       let minPrice = maxPrice;
+      let minCourse = maxCourse;
+      let minRepair = maxRepair;
       data.map(element=>{
         if (element.cena < minPrice){
           minPrice = element.cena;
-          setFilterPrice(maxPrice);
+        }
+        if(element.przebieg < minCourse){
+          minCourse = element.przebieg;
+        }
+        if(element.sredni_koszt_naprawy < minRepair){
+          minRepair = element.sredni_koszt_naprawy;
         }
       })
+      setFilterPrice(maxPrice);
+      setFilterCourse(maxCourse);
+      setFilterRepair(maxRepair);
+
       setPriceMin(minPrice);
       setPriceMax(maxPrice);
+
+      setCourseMin(minCourse);
+      setCourseMax(maxCourse);
+      
+      setRepairMin(minRepair);
+      setRepairMax(maxRepair);
     })
     .catch(error => {
         console.error('Error fetching data:', error);
@@ -118,34 +152,52 @@ const Tables = () => {
     });
   }
 
+  
+  
 
 
-
-
-
+  
   const filterCars = () =>{
-    let new_car_data = cars.filter(car => car.name.toLowerCase().includes(filterText.toLowerCase()) && car.cena <= filterPrice);
+    
+    let new_car_data = cars.filter(
+      (car) => car.name.toLowerCase().includes(filterText.toLowerCase())
+        && car.cena <= filterPrice
+          && car.przebieg <= filterCourse
+            && car.sredni_koszt_naprawy <= filterRepair
+              && (filterProducer  !== "null"? car.producer === filterProducer: true)
+    );
     console.log(new_car_data);
-    setFilteredCars(new_car_data);
+    setFilteredCars(new_car_data);      
   }
+        
+  
 
   const handleFilteredText = (event) =>{
     setFilterText(event.target.value)
   }
-
-
+        
+        
 
   const handleSliderChange = (event, num) => {
     const newValue = parseInt(event.target.value);
     if(num === 1){
       setFilterPrice(newValue);
       filterCars();
-
+    }else{
+      if (num === 2){
+        setFilterCourse(newValue);
+        filterCars();
+      }else{
+        setFilterRepair(newValue);
+        filterCars();
+      }
+      
     }
   };
 
-
-
+  const setFilterProducerFunction = (producer) =>{
+    setFilterProducer(producer);
+  }
 
   
 
@@ -155,6 +207,9 @@ const Tables = () => {
     minMax();
   }, []);
 
+  useEffect(() => {
+    filterCars();
+  }, [filterProducer]);
 
 
 
@@ -165,13 +220,24 @@ const Tables = () => {
   return (
     <>
       <Header
+        tables={true}
+        
         filterCars={filterCars}
+        filterCourse={filterCourse}
+        filterPrice={filterPrice}
+        filterRepair={filterRepair}
+        filterText={filterText}
+        
         priceMin={priceMin}
         priceMax={priceMax}
-        filterPrice={filterPrice}
+        courseMin={courseMin}
+        courseMax={courseMax}
+        repairMin={repairMin}
+        repairMax={repairMax}
+        
+        
         producers={producers}
-        tables={true}
-        filterText={filterText}
+        setFilterProducerFunction={setFilterProducerFunction}
         handleSliderChange={handleSliderChange}
         handleFilteredText={handleFilteredText}/>
 
@@ -197,7 +263,7 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(filteredCars) && filteredCars.map(element =>{
+                {Array.isArray(filteredCars)&& filteredCars.length > 0 ? filteredCars.map(element =>{
                       return(
                         <tr>
                           {/* <th scope="row">{element.ID}</th> */}
@@ -228,7 +294,7 @@ const Tables = () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                         </tr>
-                    )})}
+                    )}):<th colspan={7}>There are no cars that match your requirements</th>}
                 </tbody>
               </Table>
               <CardFooter className="py-4">

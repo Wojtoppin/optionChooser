@@ -66,7 +66,11 @@ const Index = (props) => {
   const [lineData, setLineData] = useState({});
   const [barData, setBarData] = useState({});
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC"})
-  
+
+
+
+
+
   const toggleSortingOrder = (columnName) => {
     const currentOrder = isASC[columnName];
     const newOrder = currentOrder === "ASC" ? "DESC" : "ASC";
@@ -89,11 +93,9 @@ const Index = (props) => {
     fetch('http://localhost:3040/data')
       .then((response) => response.json())
       .then((data) => {
-        console.log(weight)
         
         const test = new Best_Element();
         let results = test.onLoad(data, weight).winning_data;
-    
         let names = [];
         let sum = [];
         let prices = [];
@@ -143,7 +145,7 @@ const Index = (props) => {
               {
                 label: "Repair Price",
                 data: repair,
-                borderColor: 'rgba(0, 0, 255, 0.65)',
+                borderColor: 'rgba(17, 205, 239, 0.65)',
               },
             ],
           };
@@ -174,7 +176,7 @@ const Index = (props) => {
         if (index === 5){
           new_label = "Repair Price"
           new_data = repair;
-          new_bC = 'rgba(0, 0, 255, 0.65)'
+          new_bC = 'rgba(17, 205, 239, 0.65)'
           selected_array = repair;
 
         }
@@ -190,12 +192,52 @@ const Index = (props) => {
             ],
           };
         }
+
+
+        let producent= [];
+        let producentSum = [];
+        let producent_result = [];
+
+        results.map(element=>{
+          producent_result.push({producer: element.producer, sum: element.sum });
+        })
+
+        results.map(element=>{
+          producentSum[element.producer]=0;
+          producent[element.producer]=0;
+        })
+        results.map(element=>{
+          producentSum[element.producer]+=element.sum;
+          producent[element.producer]++;
+
+        })
+
+        producent_result = [];
+        for(const brand in producent){
+          if (producent.hasOwnProperty(brand) && producentSum.hasOwnProperty(brand)) {
+            producent_result.push({name: brand ,sum: producentSum[brand] / producent[brand]})
+          }
+        }
+        producent_result.sort((a, b) => b.sum - a.sum)
+
+
+
         chart2Data = {
-          labels: [names[0], names[1], names[2], names[3], names[4], names[5]],
+          labels: [producent_result[0].name,
+           producent_result[1].name,
+            producent_result[2].name,
+             producent_result[3].name,
+              producent_result[4].name,
+               producent_result[5].name],
           datasets: [
             {
               label: "Sales",
-              data: [selected_array[0], selected_array[1], selected_array[2], selected_array[3], selected_array[4], selected_array[5]],
+              data: [producent_result[0].sum,
+                      producent_result[1].sum,
+                       producent_result[2].sum,
+                        producent_result[3].sum,
+                         producent_result[4].sum,
+                          producent_result[5].sum],
               maxBarThickness: 10,
             },
           ],
@@ -249,22 +291,45 @@ const Index = (props) => {
 
   const handleSliderChange = (event, num) => {
     const newValue = parseInt(event.target.value);
+    let new_value = 0;
+    let new_cena = 0;
+    let new_przebieg = 0;
+    let new_klimatyzacja = 0;
+    let new_koszt = 0;
+    if(newValue !== 0){
+      new_value = 101 - newValue;
+    }
+    if (cenaSliderValue !== 0){
+      new_cena = 101-cenaSliderValue;
+    }
+    if (przebiegSliderValue !== 0){
+      new_przebieg = 101-przebiegSliderValue;
+    }
+    if (klimatyzacjaSliderValue !== 0){
+      new_klimatyzacja = 101-klimatyzacjaSliderValue;
+    }
+    if (kosztSliderValue !== 0){
+      new_koszt = 101-kosztSliderValue;
+    }
+
+
+
     if(num === 1){
         setCenaSliderValue(newValue);
-        setWeights({["cena"]:101-newValue, ["przebieg"]:101-przebiegSliderValue, ["klimatyzacja"]:101-klimatyzacjaSliderValue, ["sredni_koszt_naprawy"]:101-kosztSliderValue });
+        setWeights({["cena"]:new_value, ["przebieg"]:new_przebieg, ["klimatyzacja"]:new_klimatyzacja, ["sredni_koszt_naprawy"]:new_koszt });
 
     }else{
         if(num === 2){
             setPrzebiegSliderValue(newValue);
-            setWeights({["cena"]:101-cenaSliderValue, ["przebieg"]:101-newValue, ["klimatyzacja"]:101-klimatyzacjaSliderValue, ["sredni_koszt_naprawy"]:101-kosztSliderValue });
+            setWeights({["cena"]:new_cena, ["przebieg"]:new_value, ["klimatyzacja"]:new_klimatyzacja, ["sredni_koszt_naprawy"]:new_koszt });
 
         }else{
             if(num === 3){
               setKlimatyzacjaSliderValue(newValue);
-              setWeights({["cena"]:101-cenaSliderValue, ["przebieg"]:101-przebiegSliderValue, ["klimatyzacja"]:101-newValue, ["sredni_koszt_naprawy"]:101-kosztSliderValue });
+              setWeights({["cena"]:new_cena, ["przebieg"]:new_przebieg, ["klimatyzacja"]:new_value, ["sredni_koszt_naprawy"]:new_koszt });
             }else{
               setKosztSliderValue(newValue);
-              setWeights({["cena"]:101-cenaSliderValue, ["przebieg"]:101-przebiegSliderValue, ["klimatyzacja"]:101-klimatyzacjaSliderValue, ["sredni_koszt_naprawy"]:101-newValue });
+              setWeights({["cena"]:new_cena, ["przebieg"]:new_przebieg, ["klimatyzacja"]:new_klimatyzacja, ["sredni_koszt_naprawy"]:new_value });
         }
     }
     
@@ -272,6 +337,8 @@ const Index = (props) => {
 
 
   useEffect(() => {
+    document.title = 'REACT RISK CALCULATOR';
+
     fetchDataAndUpdateCharts(1);
     refreashData();
     refreashProducers();
@@ -394,7 +461,7 @@ const Index = (props) => {
                     <h6 className="text-uppercase text-muted ls-1 mb-1">
                       Performance
                     </h6>
-                    <h2 className="mb-0">Total orders</h2>
+                    <h2 className="mb-0">Average Car points per brand</h2>
                   </div>
                 </Row>
               </CardHeader>
