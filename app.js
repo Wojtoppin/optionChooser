@@ -12,6 +12,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.json());
 
 // -------database-------
 app.get('/data', (req, res) => {
@@ -45,26 +46,28 @@ app.get('/data/:direction/:code/', (req, res) => {
   });
 });
 
-app.use(express.json());
 
 app.post('/addData', (req, res) => {
-  const { name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy } = req.body;
+  const { name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, producer_id } = req.body;
 
-  if (!name || isNaN(parseFloat(cena)) || isNaN(parseInt(przebieg)) || isNaN(parseFloat(sredni_koszt_naprawy))) {
+  if (!name || isNaN(parseFloat(cena)) || isNaN(parseInt(przebieg)) || isNaN(parseFloat(sredni_koszt_naprawy))|| isNaN(parseFloat(producer_id))) {
     return res.status(400).json({ error: 'Invalid data format' });
   }
-  const sql = `INSERT INTO samochody (name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy) VALUES (?, ?, ?, ?, ?) `;
+  const sql = `INSERT INTO samochody (name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, producer_id) VALUES (?, ?, ?, ?, ?, ?) `;
   
 
-  db.query(sql, [name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy],(err, results) => {
+  db.query(sql, [name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, producer_id],(err, results) => {
     if (err) {
       console.error('Error fetching data:', err);
       res.status(500).json({ error: 'Internal Server Error' });
+      console.log(sql)
       return;  
     }
+    res.setHeader('Content-Type', 'application/json');
     res.json({ message: 'Data inserted successfully' });
   });
 });
+
 
 //----------Producer------------
 

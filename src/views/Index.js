@@ -65,7 +65,10 @@ const Index = (props) => {
   const [producersPercentage, setProducersPercentage] = useState()
   const [lineData, setLineData] = useState({});
   const [barData, setBarData] = useState({});
-  const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC"})
+  const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"})
+  const [bestCar, setBestCar] = useState("")
+  const [bestProducer, setBestProducer] = useState("")
+  
 
 
 
@@ -102,6 +105,7 @@ const Index = (props) => {
         let km = [];
         let AC = [];
         let repair = [];
+        setBestCar(results[0].name)
         results.map(element =>{
           names.push(element.name);
           sum.push(element.sum);
@@ -219,7 +223,7 @@ const Index = (props) => {
           }
         }
         producent_result.sort((a, b) => b.sum - a.sum)
-
+        setBestProducer(producent_result[0].name)
 
 
         chart2Data = {
@@ -369,9 +373,9 @@ const Index = (props) => {
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-light ls-1 mb-1">
-                      Overview
+                      Cars
                     </h6>
-                    <h2 className="text-white mb-0">Cars</h2>
+                    <h2 className="text-white mb-0">{bestCar}</h2>
                   </div>
                   <div className="col">
                     <Nav className="justify-content-end" pills>
@@ -459,9 +463,9 @@ const Index = (props) => {
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-muted ls-1 mb-1">
-                      Performance
+                      Average Car points per brand
                     </h6>
-                    <h2 className="mb-0">Average Car points per brand</h2>
+                    <h2 className="mb-0">{bestProducer}</h2>
                   </div>
                 </Row>
               </CardHeader>
