@@ -70,6 +70,9 @@ const Sidebar = (props) => {
   };
   // creates the links that appear in the left menu / Sidebar
   const createLinks = (routes) => {
+    console.log(routes)
+    console.log(props)
+
     return routes.map((prop, key) => {
       return (
         <NavItem key={key}>
@@ -86,7 +89,25 @@ const Sidebar = (props) => {
     });
   };
 
-  const { bgColor, routes, logo } = props;
+  const createGenericLinks = (generic_routes) => {
+    console.log(generic_routes)
+    return generic_routes.map((prop, key) => {
+      return (
+        <NavItem key={key}>
+          <NavLink
+            to={prop.layout + prop.path}
+            tag={NavLinkRRD}
+            onClick={closeCollapse}
+          >
+            <i className={prop.icon} />
+            {prop.name}
+          </NavLink>
+        </NavItem>
+      );
+    });
+  };
+
+  const { bgColor, generic_routes, routes, logo } = props;
   let navbarBrandProps;
   if (logo && logo.innerLink) {
     navbarBrandProps = {
@@ -126,7 +147,7 @@ const Sidebar = (props) => {
           </NavbarBrand>
         ) : null}
         {/* User */}
-        <Nav className="align-items-center d-md-none">
+        {/* <Nav className="align-items-center d-md-none">
           <UncontrolledDropdown nav>
             <DropdownToggle nav className="nav-link-icon">
               <i className="ni ni-bell-55" />
@@ -180,11 +201,11 @@ const Sidebar = (props) => {
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
-        </Nav>
+        </Nav> */}
         {/* Collapse */}
         <Collapse navbar isOpen={collapseOpen}>
           {/* Collapse header */}
-          <div className="navbar-collapse-header d-md-none">
+          {/* <div className="navbar-collapse-header d-md-none">
             <Row>
               {logo ? (
                 <Col className="collapse-brand" xs="6">
@@ -210,9 +231,9 @@ const Sidebar = (props) => {
                 </button>
               </Col>
             </Row>
-          </div>
+          </div> */}
           {/* Form */}
-          <Form className="mt-4 mb-3 d-md-none">
+          {/* <Form className="mt-4 mb-3 d-md-none">
             <InputGroup className="input-group-rounded input-group-merge">
               <Input
                 aria-label="Search"
@@ -226,22 +247,48 @@ const Sidebar = (props) => {
                 </InputGroupText>
               </InputGroupAddon>
             </InputGroup>
-          </Form>
+          </Form> */}
           {/* Navigation */}
+
+          <h6 className="navbar-heading text-muted">Cars</h6>
           <Nav navbar>{createLinks(routes)}</Nav>
-          {/* Divider */}
+
           <hr className="my-3" />
-          {/* Heading */}
-          <h6 className="navbar-heading text-muted">Documentation</h6>
-          {/* Navigation */}
+          
+          
+          <h6 className="navbar-heading text-muted">Generic</h6>
+          <Nav navbar>{createGenericLinks(generic_routes)}</Nav>
+
+          <hr className="my-3" />
+          
+           <h6 className="navbar-heading text-muted">Documentation</h6>
+          
           <Nav className="mb-md-3" navbar>
             <NavItem>
-              <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview?ref=adr-admin-sidebar">
+              <NavLink href="https://github.com/Wojtoppin/optionChooser" target="_blank">
                 <i className="ni ni-spaceship" />
-                Getting started
+                Github
               </NavLink>
             </NavItem>
-            <NavItem>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           {/* <NavItem>
               <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/colors?ref=adr-admin-sidebar">
                 <i className="ni ni-palette" />
                 Foundation
@@ -252,16 +299,16 @@ const Sidebar = (props) => {
                 <i className="ni ni-ui-04" />
                 Components
               </NavLink>
-            </NavItem>
+                  </NavItem>*/}
           </Nav>
-          <Nav className="mb-md-3" navbar>
+          {/*<Nav className="mb-md-3" navbar>
             <NavItem className="active-pro active">
               <NavLink href="https://www.creative-tim.com/product/argon-dashboard-pro-react?ref=adr-admin-sidebar">
                 <i className="ni ni-spaceship" />
                 Upgrade to PRO
               </NavLink>
             </NavItem>
-          </Nav>
+          </Nav> */}
         </Collapse>
       </Container>
     </Navbar>
@@ -270,11 +317,13 @@ const Sidebar = (props) => {
 
 Sidebar.defaultProps = {
   routes: [{}],
+  generic_routes: [{}],
 };
 
 Sidebar.propTypes = {
   // links that will be displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
+  generic_routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
     // innerLink is for links that will direct the user within the app
     // it will be rendered as <Link to="...">...</Link> tag

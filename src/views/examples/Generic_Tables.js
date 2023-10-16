@@ -40,7 +40,7 @@ import {
 // core components
 import Header from "components/Headers/Header.js";
 
-const Tables = () => {
+const Generic_Tables = () => {
   const [producers, setProducers] = useState({});
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"});
   const [cars, setCars] = useState([]);
@@ -398,99 +398,99 @@ const Tables = () => {
               </Card>
           :<Card className="shadow">
               
-              <CardHeader className="border-0">
+          <CardHeader className="border-0">
 
 
 
-              <div style={{color:topTableTextColor}}>{topTableText}</div>
+          <div style={{color:topTableTextColor}}>{topTableText}</div>
 
 
 
 
-              <div style={{float:"right"}} className="mb-0">
-                    {currentAction}
-                    <button onClick={handleSwitchButton}>change Action</button>
-                  </div>
-              </CardHeader>
-            <form onSubmit={handleSubmitForm}>
-               
-               <Table
-                // style={{textAlign:"center"}}
-                className="align-items-center table-flush"
-                responsive
-                
-              >
-                <thead className="thead-light">
-                <tr>
-                    <th scope="col">index</th><th>value</th><th>range used in other cars</th>
-                  </tr>
-                </thead>
+          <div style={{float:"right"}} className="mb-0">
+                {currentAction}
+                <button onClick={handleSwitchButton}>change Action</button>
+              </div>
+          </CardHeader>
+        <form onSubmit={handleSubmitForm}>
+           
+           <Table
+            // style={{textAlign:"center"}}
+            className="align-items-center table-flush"
+            responsive
+            
+          >
+            <thead className="thead-light">
+            <tr>
+                <th scope="col">index</th><th>value</th><th>range used in other cars</th>
+              </tr>
+            </thead>
 
-                <tbody>
-                  <tr>
-                    <th><label htmlFor="name">Car model: </label></th>
-                    <th><input type="text" name="name" id="name" value={formData.name} onChange={handleChange}/></th>
-                    <th>e.g. "Chevrolet Camaro"</th>
+            <tbody>
+              <tr>
+                <th><label htmlFor="name">Car model: </label></th>
+                <th><input type="text" name="name" id="name" value={formData.name} onChange={handleChange}/></th>
+                <th>e.g. "Chevrolet Camaro"</th>
 
-                  </tr>
+              </tr>
 
-                  <tr>
-                    <th><label htmlFor="cena">Price: </label></th>
-                    <th><input type="number" step="50" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/></th>
-                    <th>{priceMin}$ - {priceMax}$</th>
-                  </tr>
-                  
-                  <tr>
-                    <th><label htmlFor="przebieg">Course: </label></th>
-                    <th><input type="number" step="50"  name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/></th>
-                    <th>{courseMin} km - {courseMax} km</th>
+              <tr>
+                <th><label htmlFor="cena">Price: </label></th>
+                <th><input type="number" step="50" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/></th>
+                <th>{priceMin}$ - {priceMax}$</th>
+              </tr>
+              
+              <tr>
+                <th><label htmlFor="przebieg">Course: </label></th>
+                <th><input type="number" step="50"  name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/></th>
+                <th>{courseMin} km - {courseMax} km</th>
 
-                  </tr>
-                  
-                  <tr>
-                    <th><label htmlFor="klimatyzacja">Air Conditioning: </label></th>
-                    <th><input type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
-                    <th></th>
-                  </tr>
-                  
-                  <tr>
-                    <th><label htmlFor="sredni_koszt_naprawy">Average repair price: </label></th>
-                    <th><input type="number" step="20" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/></th>
-                    <th>{repairMin}$ - {repairMax}$</th>
+              </tr>
+              
+              <tr>
+                <th><label htmlFor="klimatyzacja">Air Conditioning: </label></th>
+                <th><input type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
+                <th></th>
+              </tr>
+              
+              <tr>
+                <th><label htmlFor="sredni_koszt_naprawy">Average repair price: </label></th>
+                <th><input type="number" step="20" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/></th>
+                <th>{repairMin}$ - {repairMax}$</th>
 
-                  </tr>
-                  
-                  <tr>
-                    <th>Producer</th>
-                    <th>
-                      <select name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
-                        <option value="null"></option>
-                        {Array.isArray(producers) &&
-                          producers !== undefined &&
-                          producers.map((element) => (
-                            <option key={element.id} value={element.id}>
-                              {element.producer}
-                            </option>
-                          ))}
-                      </select>
-                    </th>
-                    <th></th>
-                  </tr>
+              </tr>
+              
+              <tr>
+                <th>Producer</th>
+                <th>
+                  <select name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
+                    <option value="null"></option>
+                    {Array.isArray(producers) &&
+                      producers !== undefined &&
+                      producers.map((element) => (
+                        <option key={element.id} value={element.id}>
+                          {element.producer}
+                        </option>
+                      ))}
+                  </select>
+                </th>
+                <th></th>
+              </tr>
 
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <th colSpan={3} style={{textAlign:"center"}}>
-                      <button type="submit" disabled={topTableTextColor === "red"}>Wyślij</button>
-                    </th>
-                  </tr>
-                </tfoot>
-              </Table>
-            </form>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colSpan={3} style={{textAlign:"center"}}>
+                  <button type="submit" disabled={topTableTextColor === "red"}>Wyślij</button>
+                </th>
+              </tr>
+            </tfoot>
+          </Table>
+        </form>
 
 
 
-            </Card>}
+        </Card>}
           </div>
         </Row>
       </Container>
@@ -498,4 +498,4 @@ const Tables = () => {
   );
 };
 
-export default Tables;
+export default Generic_Tables;

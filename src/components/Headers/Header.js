@@ -237,14 +237,15 @@ const Header = (props) => {
                         >
                           AC
                         </CardTitle>
-                        <input type="checkbox" />
+                        <h6><button style={{margin:"0px", padding:"1px"}} onClick={props.handleACbutton}>Change</button></h6>
+                        
                       </div>
                     </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
+                    <h6 className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-danger mr-2">
-                         {props.csV}
+                      {props.filterACValue}
                       </span>
-                    </p>
+                    </h6>
                   </CardBody>
                 </Card>
               </Col>

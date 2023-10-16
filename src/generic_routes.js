@@ -22,24 +22,16 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
+import Generic_Tables from "views/examples/Generic_Tables";
 
-var routes = [
+var generic_routes = [
   {
-    path: "/index",
+    path: "/generic/index",
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
     component: <Index />,
     layout: "/admin",
   },
-
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "ni ni-planet text-blue",
-  //   component: <Icons />,
-  //   layout: "/admin",
-  // },
-
   // {
   //   path: "/maps",
   //   name: "Maps",
@@ -55,10 +47,10 @@ var routes = [
   //   layout: "/admin",
   // },
   {
-    path: "/tables",
-    name: "Filter/Add data",
+    path: "/generic/tables",
+    name: "Filter/Add generic data",
     icon: "ni ni-bullet-list-67 text-red",
-    component: <Tables />,
+    component: <Generic_Tables />,
     layout: "/admin",
   },
   // {
@@ -75,5 +67,12 @@ var routes = [
   //   component: <Register />,
   //   layout: "/auth",
   // },
+  {
+    path: "/generic/icons",
+    name: "Icons",
+    icon: "ni ni-planet text-blue",
+    component: <Icons />,
+    layout: "/admin",
+  },
 ];
-export default routes;
+export default generic_routes;

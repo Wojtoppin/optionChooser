@@ -70,10 +70,6 @@ const Index = (props) => {
   const [bestProducer, setBestProducer] = useState("")
   
 
-
-
-
-
   const toggleSortingOrder = (columnName) => {
     const currentOrder = isASC[columnName];
     const newOrder = currentOrder === "ASC" ? "DESC" : "ASC";
@@ -292,7 +288,6 @@ const Index = (props) => {
     });
   }
 
-
   const handleSliderChange = (event, num) => {
     const newValue = parseInt(event.target.value);
     let new_value = 0;
@@ -339,7 +334,6 @@ const Index = (props) => {
     
   }};
 
-
   useEffect(() => {
     document.title = 'REACT RISK CALCULATOR';
 
@@ -347,6 +341,11 @@ const Index = (props) => {
     refreashData();
     refreashProducers();
   }, []);
+
+
+
+
+  
   return (
     <>
       <Header 
