@@ -1,0 +1,18 @@
+Filtrowanie w nagłówkach ----zrobione----
+Walidacje przy polach na formularzu ----zrobione----
+
+
+
+zablokowanie nagłówka
+paginacja
+CSSy
+prezentacja danych na wykresie- wybierz najbardziej opłacalny samochód z filtrowania:
+jeżeli wybiorę cenę do 50k i przebieg do 150k, to pokaż mi najtańsze auto, z najmniejszym przebiegiem,
+ z klimatyzacją i najmniejszym kosztem napraw
+Jeżeli warunem jest na 0, to wybierz najlepszy
+
+
+generic
+Formularz cech (dodaj usuń badaną cechę)
+Formularz dodawania danych
+Wykres i wybór najlepszego

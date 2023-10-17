@@ -1,9 +1,7 @@
 class Best_Element{
     //główna funkcja
-    onLoad(data, weights){
-
+    onLoad(data, weights, sorted){
         this.elementData = data;
-
         //nazwy wszystkich kluczy tablic które potem są użyte aby kod działał automatycznie
         const keys = Object.keys(this.elementData[0]);
         const {low, high, new_weights} = this.calculateWeight(keys, weights);
@@ -19,7 +17,7 @@ class Best_Element{
 
         });
 
-        const winning_data = this.result(high, keys, new_weights);
+        const winning_data = this.result(high, keys, new_weights, sorted);
 
 
         return({winning_data})
@@ -53,49 +51,44 @@ class Best_Element{
 
 
     // funkcja podsumowująca dane
-    result(high,  keys, weight){
-        // let confirms = {}
-        // skrypt pytający czy dany klucz powinienen być podliczany jako coś pozytywnegy, czy negatwnego
-        // np.: cena czegoś jest negatywna ponieważ chcąc wybrać najlepszy element szukamy najniższej ceny a nie na odwrót
-        // keys.slice(2, -1).forEach(key => {
-        //     const userConfirmed = window.confirm("Should {" + key + "} be counted as a negative thing")
-        //     if(userConfirmed){
-        //         confirms[key] = "-";
-        //     }else{
-        //         confirms[key] = "+";
-        //     }
-        // })
+    result(high,  keys, weight, sorted){
+        let forData = {};
+        let confirms = {}
+        for (let key in sorted[0]) {
+            if (sorted[0].hasOwnProperty(key) && key !== "ID") {
+                forData[key] = sorted[0][key] == 1 ? true : false;
+            }
+        }
         let winning_data = [];
-
-
-
-
-
+        confirms = forData;
+        
+        console.log(this.elementData)
         this.elementData.forEach(element => {
             let sum = 0;
             let element_data = {};
 
             //poniższy kod sprawdza czy klucze były wcześniej wybrane jako pozytywne, czy negatywne, po czym konwertuje te dane na liczby rozmyte
-            keys.slice(2, -1).forEach(key => {
-                // if(confirms[key] === "-"){
-                //     element_data[key] = 1 - element[key]/high[key];
-                // }else{
+            for (let key in confirms) {
+                if(confirms[key]){
                     element_data[key] = element[key]/high[key];
+                }else{
+                    element_data[key] = 1 - element[key]/high[key];
 
-                // }
-            })
+                }
+            }
+
             // podliczanie sumy wszystkich licz
             keys.slice(2, -1).forEach(key =>{
                 if(weight[key] !== 0){
                     if(weight[key]===1){
                         weight[key]=0.999;
                     }
-                    
                     sum += element_data[key] - element_data[key] * weight[key];
                 }else{
                     element_data[key] = 0;
                 }
             })
+            console.log(element_data)
 
             winning_data.push({"name": element.name, "sum": sum,
              "cena":element_data["cena"] - element_data["cena"] * weight["cena"],
