@@ -86,6 +86,22 @@ app.get('/producent', (req, res) => {
     res.json(results);
   });
 });
+
+//----------weight------------
+
+app.get('/weight', (req, res) => {
+  const sql = `SELECT * FROM weight WHERE 1=1`;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;  
+    }
+    res.json(results);
+  });
+});
+
 // -------/database-------
 
 

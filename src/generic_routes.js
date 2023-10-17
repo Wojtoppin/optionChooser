@@ -23,6 +23,7 @@ import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Generic_Tables from "views/examples/Generic_Tables";
+import Create_Generic_Tables from "views/examples/Create_Generic_Tables";
 
 var generic_routes = [
   {
@@ -67,6 +68,13 @@ var generic_routes = [
   //   component: <Register />,
   //   layout: "/auth",
   // },
+  {
+    path: "/generic/new_tables",
+    name: "Create Generic Table",
+    icon: "ni ni-archive-2",
+    component: <Create_Generic_Tables />,
+    layout: "/admin",
+  },
   {
     path: "/generic/icons",
     name: "Icons",

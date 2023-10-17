@@ -280,7 +280,7 @@ const Header = (props) => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg="6" xl="2">
+              {/* <Col lg="6" xl="2">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
@@ -310,7 +310,7 @@ const Header = (props) => {
                     </p>
                   </CardBody>
                 </Card>
-              </Col>
+              </Col> */}
             </Row>}
           </div>
         </Container>

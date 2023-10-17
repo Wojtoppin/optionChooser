@@ -68,13 +68,13 @@ const Index = (props) => {
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"})
   const [bestCar, setBestCar] = useState("")
   const [bestProducer, setBestProducer] = useState("")
+  const [sorted, setSorted] = useState({})
   
 
   const toggleSortingOrder = (columnName) => {
     const currentOrder = isASC[columnName];
     const newOrder = currentOrder === "ASC" ? "DESC" : "ASC";
     setIsASC({ ...isASC, [columnName]: newOrder });
-    console.log(isASC)
   };
 
   if (window.Chart) {
@@ -84,176 +84,183 @@ const Index = (props) => {
   const toggleNavs = (e, index) => {
     e.preventDefault();
     setActiveNav(index);
-    fetchDataAndUpdateCharts(index)
+    UpdateCharts(index)
   };
 
-  function fetchDataAndUpdateCharts(index) {
-    
-    fetch('http://localhost:3040/data')
-      .then((response) => response.json())
-      .then((data) => {
+  function UpdateCharts(index, filteredCars={}) {
+
+    fetch(`http://localhost:3040/data`)
+    .then(response => response.json())
+    .then(data => {
+      const test = new Best_Element();
+      let results = []
+      if(filteredCars.length > 0){
+        results = test.onLoad(filteredCars, weight, sorted).winning_data;
         
-        const test = new Best_Element();
-        let results = test.onLoad(data, weight).winning_data;
-        let names = [];
-        let sum = [];
-        let prices = [];
-        let km = [];
-        let AC = [];
-        let repair = [];
-        setBestCar(results[0].name)
-        results.map(element =>{
-          names.push(element.name);
-          sum.push(element.sum);
-          prices.push(element.cena);
-          km.push(element.przebieg);
-          AC.push(element.klimatyzacja);
-          repair.push(element.sredni_koszt_naprawy);
-        })
-        let chart1Data = {};
-        let chart2Data = {};
-        let new_label="";
-        let new_data = [];
-        let new_bC = "";
-        let selected_array = [];
+      }else{
+        results = test.onLoad(data, weight, sorted).winning_data;
 
-        if (index === 1){
-          chart1Data = {
-            labels: names,
-            datasets: [
-              {
-                label: "Sum",
-                data: sum,
-                borderColor: 'rgba(255, 0, 0, 0.65)',
-                
-              },
-              {
-                label: "Price",
-                data: prices,
-                borderColor: 'rgba(255, 0, 141, 0.65)',
-              },
-              {
-                label: "Course",
-                data: km,
-                borderColor: 'rgba(255, 119, 0, 0.65)',
-              },
-              {
-                label: "Air Conditioning",
-                data: AC,
-                borderColor: 'rgba(248, 255, 0, 0.65)',
-              },
-              {
-                label: "Repair Price",
-                data: repair,
-                borderColor: 'rgba(17, 205, 239, 0.65)',
-              },
-            ],
-          };
-          selected_array = sum;
-          
-        }
-        if (index === 2){
-          new_label = "Price"
-          new_data = prices;
-          new_bC = "rgba(255, 0, 141, 0.65)"
-          selected_array = prices;
+      }
+      console.log(results)
+      let names = [];
+      let sum = [];
+      let prices = [];
+      let km = [];
+      let AC = [];
+      let repair = [];
+      setBestCar(results[0].name)
+      results.map(element =>{
+        names.push(element.name);
+        sum.push(element.sum);
+        prices.push(element.cena);
+        km.push(element.przebieg);
+        AC.push(element.klimatyzacja);
+        repair.push(element.sredni_koszt_naprawy);
+      })
+      let chart1Data = {};
+      let chart2Data = {};
+      let new_label="";
+      let new_data = [];
+      let new_bC = "";
+      let selected_array = [];
 
-        }
-        if (index === 3){
-          new_label = "Course"
-          new_data = km;
-          new_bC = "rgba(255, 119, 0, 0.65)"
-          selected_array = km;
-
-        }
-        if (index === 4){
-          new_label = "Air Conditioning"
-          new_data = AC;
-          new_bC = 'rgba(248, 255, 0, 0.65)'
-          selected_array = AC;
-
-        }
-        if (index === 5){
-          new_label = "Repair Price"
-          new_data = repair;
-          new_bC = 'rgba(17, 205, 239, 0.65)'
-          selected_array = repair;
-
-        }
-        if(Object.keys(chart1Data).length === 0){
-          chart1Data = {
-            labels: names,
-            datasets: [
-              {
-                label: new_label,
-                data: new_data,
-                borderColor: new_bC,
-              },
-            ],
-          };
-        }
-
-
-        let producent= [];
-        let producentSum = [];
-        let producent_result = [];
-
-        results.map(element=>{
-          producent_result.push({producer: element.producer, sum: element.sum });
-        })
-
-        results.map(element=>{
-          producentSum[element.producer]=0;
-          producent[element.producer]=0;
-        })
-        results.map(element=>{
-          producentSum[element.producer]+=element.sum;
-          producent[element.producer]++;
-
-        })
-
-        producent_result = [];
-        for(const brand in producent){
-          if (producent.hasOwnProperty(brand) && producentSum.hasOwnProperty(brand)) {
-            producent_result.push({name: brand ,sum: producentSum[brand] / producent[brand]})
-          }
-        }
-        producent_result.sort((a, b) => b.sum - a.sum)
-        setBestProducer(producent_result[0].name)
-
-
-        chart2Data = {
-          labels: [producent_result[0].name,
-           producent_result[1].name,
-            producent_result[2].name,
-             producent_result[3].name,
-              producent_result[4].name,
-               producent_result[5].name],
+      if (index === 1){
+        chart1Data = {
+          labels: names,
           datasets: [
             {
-              label: "Sales",
-              data: [producent_result[0].sum,
-                      producent_result[1].sum,
-                       producent_result[2].sum,
-                        producent_result[3].sum,
-                         producent_result[4].sum,
-                          producent_result[5].sum],
-              maxBarThickness: 10,
+              label: "Sum",
+              data: sum,
+              borderColor: 'rgba(255, 0, 0, 0.65)',
+              
+            },
+            {
+              label: "Price",
+              data: prices,
+              borderColor: 'rgba(255, 0, 141, 0.65)',
+            },
+            {
+              label: "Course",
+              data: km,
+              borderColor: 'rgba(255, 119, 0, 0.65)',
+            },
+            {
+              label: "Air Conditioning",
+              data: AC,
+              borderColor: 'rgba(248, 255, 0, 0.65)',
+            },
+            {
+              label: "Repair Price",
+              data: repair,
+              borderColor: 'rgba(17, 205, 239, 0.65)',
             },
           ],
         };
-
-        chartExample1.data1 = (canvas) => chart1Data;
-        setLineData(chart1Data);
+        selected_array = sum;
         
-        chartExample2.data2 = (canvas) => chart2Data;
-        setBarData(chart2Data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+      }
+      if (index === 2){
+        new_label = "Price"
+        new_data = prices;
+        new_bC = "rgba(255, 0, 141, 0.65)"
+        selected_array = prices;
 
-  }
+      }
+      if (index === 3){
+        new_label = "Course"
+        new_data = km;
+        new_bC = "rgba(255, 119, 0, 0.65)"
+        selected_array = km;
+
+      }
+      if (index === 4){
+        new_label = "Air Conditioning"
+        new_data = AC;
+        new_bC = 'rgba(248, 255, 0, 0.65)'
+        selected_array = AC;
+
+      }
+      if (index === 5){
+        new_label = "Repair Price"
+        new_data = repair;
+        new_bC = 'rgba(17, 205, 239, 0.65)'
+        selected_array = repair;
+
+      }
+      if(Object.keys(chart1Data).length === 0){
+        chart1Data = {
+          labels: names,
+          datasets: [
+            {
+              label: new_label,
+              data: new_data,
+              borderColor: new_bC,
+            },
+          ],
+        };
+    }
+
+
+    let producent= [];
+    let producentSum = [];
+    let producent_result = [];
+
+    results.map(element=>{
+      producent_result.push({producer: element.producer, sum: element.sum });
+    })
+
+    results.map(element=>{
+      producentSum[element.producer]=0;
+      producent[element.producer]=0;
+    })
+    results.map(element=>{
+      producentSum[element.producer]+=element.sum;
+      producent[element.producer]++;
+
+    })
+
+    producent_result = [];
+    for(const brand in producent){
+      if (producent.hasOwnProperty(brand) && producentSum.hasOwnProperty(brand)) {
+        producent_result.push({name: brand ,sum: producentSum[brand] / producent[brand]})
+      }
+    }
+    producent_result.sort((a, b) => b.sum - a.sum)
+    setBestProducer(producent_result[0].name)
+
+
+    chart2Data = {
+      labels: [producent_result[0].name,
+        producent_result[1].name,
+        producent_result[2].name,
+          producent_result[3].name,
+          producent_result[4].name,
+            producent_result[5].name],
+      datasets: [
+        {
+          label: "Sales",
+          data: [producent_result[0].sum,
+                  producent_result[1].sum,
+                    producent_result[2].sum,
+                    producent_result[3].sum,
+                      producent_result[4].sum,
+                      producent_result[5].sum],
+          maxBarThickness: 10,
+        },
+      ],
+    };
+
+    chartExample1.data1 = (canvas) => chart1Data;
+    setLineData(chart1Data);
+    
+    chartExample2.data2 = (canvas) => chart2Data;
+    setBarData(chart2Data);
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+    }
+
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -263,11 +270,13 @@ const Index = (props) => {
     fetch(link)
     .then(response => response.json())
     .then(data => {
+
         setCars(data);
     })
     .catch(error => {
         console.error('Error fetching data:', error);
     });
+    
   }
 
   const refreashProducers = () =>{
@@ -334,22 +343,39 @@ const Index = (props) => {
     
   }};
 
+  const fetchWeights = () =>{
+    fetch(`http://localhost:3040/weight`)
+    .then((response) => response.json())
+      .then((data) => {
+        setSorted(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+
+
+
+
+
   useEffect(() => {
     document.title = 'REACT RISK CALCULATOR';
-
-    fetchDataAndUpdateCharts(1);
     refreashData();
     refreashProducers();
+    fetchWeights();
+    UpdateCharts(1);
   }, []);
 
+  useEffect(() => {
+    UpdateCharts(1);
+  }, [cars]);
 
 
-
-  
   return (
     <>
       <Header 
-      fetchDataAndUpdateCharts={fetchDataAndUpdateCharts}
+      fetchDataAndUpdateCharts={UpdateCharts}
       handleSliderChange={handleSliderChange}
       csV = {cenaSliderValue}
       psV = {przebiegSliderValue}
@@ -450,7 +476,7 @@ const Index = (props) => {
                   <Line
                     data={lineData}
                     options={chartExample1.options}
-                    getDatasetAtEvent={(e) => console.log(e)}
+                    getDatasetAtEvent={(e) => console.log(cars)}
                   />
                 </div>
               </CardBody>
