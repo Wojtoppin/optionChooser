@@ -42,7 +42,6 @@ import Header from "components/Headers/Header.js";
 
 const Generic_Tables = () => {
   const [producers, setProducers] = useState({});
-  const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"});
   const [cars, setCars] = useState([]);
 
   const [filteredCars, setFilteredCars] = useState({});
@@ -66,11 +65,7 @@ const Generic_Tables = () => {
   const [topTableText, setTopTableText] = useState("")
   const [topTableTextColor, setTopTableTextColor] = useState("red")//rgb(255, 0, 0)  rgb(0, 255, 0)
 
-  const toggleSortingOrder = (columnName) => {
-    const currentOrder = isASC[columnName];
-    const newOrder = currentOrder === "ASC" ? "DESC" : "ASC";
-    setIsASC({ ...isASC, [columnName]: newOrder });
-  };
+
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -190,13 +185,13 @@ const Generic_Tables = () => {
 
   const setFilterProducerFunction = (producer) =>{
     setFilterProducer(producer);
-    inputValidChecker();
   }
 
   const handleSwitchButton = () =>{
     const question = currentAction === "Filtering data ";
     setCurrentAction(question ? "Adding data ": "Filtering data ");
     setIsTablesVisible(!question);
+    inputValidChecker();
     document.title = document.title === 'Filtering data' ? 'Adding data': 'Filtering data';
   }
 
@@ -255,39 +250,93 @@ const Generic_Tables = () => {
 
   const inputValidChecker = () =>{
     let infoText = "";
-    if(formData.name.length <= 0 || formData.name.length > 30){
-      infoText += "Car model ";
-    }
-    if(formData.cena <= 0){
-      infoText += "Price ";
-    }
-    if(formData.przebieg <= 0){
-      infoText += "Course ";
-    }
-    if(formData.sredni_koszt_naprawy <= 0){
-      infoText += "Average repair price ";
-    }
-    if(filterProducer === "null"){
-      infoText += "Producer ";
-    }
-    if(infoText.length>0){
-      setTopTableText("Incorrect values at: " + infoText);
-      setTopTableTextColor("red");
+    let cssName = document.getElementById("name");
+    let cssCena = document.getElementById("cena");
+    let cssPrzebieg = document.getElementById("przebieg");
+    let cssSredni_koszt_naprawy = document.getElementById("sredni_koszt_naprawy");
+    let cssProducer = document.getElementById("producer");
 
-    }else{
-      setTopTableText("Correct values")
-      setTopTableTextColor("green");
 
-    }
+    
+
+    if(cssName
+       && cssCena
+        && cssPrzebieg
+         && cssSredni_koszt_naprawy
+          && cssProducer){
+      
+      
+      let cssNameVisibility = document.getElementById("nameVisibility");
+      let cssCenaVisibility = document.getElementById("cenaVisibility");
+      let cssPrzebiegVisibility = document.getElementById("przebiegVisibility");
+      let cssSredni_koszt_naprawyVisibility = document.getElementById("sredni_koszt_naprawyVisibility");
+      
+      
+      cssName.style.borderColor = "red";
+      cssCena.style.borderColor = "red";
+      cssPrzebieg.style.borderColor = "red";
+      cssSredni_koszt_naprawy.style.borderColor = "red";
+      cssProducer.style.borderColor = "red";
+
+      if(formData.name.length <= 0 || formData.name.length > 30){
+        infoText += "Car model ";
+        cssName.style.borderColor = "red";
+        cssNameVisibility.style.visibility = "visible";
+      }else{
+        cssNameVisibility.style.visibility = "hidden";
+        cssName.style.borderColor = "green";
+      }
+
+      if(formData.cena < priceMin || formData.cena > priceMax){
+        infoText += "Price ";
+        cssCena.style.borderColor = "red";
+        cssCenaVisibility.style.visibility = "visible";
+      }else{
+        cssCenaVisibility.style.visibility = "hidden";
+        cssCena.style.borderColor = "green";
+      }
+
+      if(formData.przebieg < courseMin || formData.przebieg > courseMax){
+        infoText += "Course ";
+        cssPrzebieg.style.borderColor = "red";
+        cssPrzebiegVisibility.style.visibility = "visible";
+      }else{
+        cssPrzebiegVisibility.style.visibility = "hidden";
+        cssPrzebieg.style.borderColor = "green";
+      }
+
+      if(formData.sredni_koszt_naprawy < repairMin || formData.sredni_koszt_naprawy > repairMax){
+        infoText += "Average repair price ";
+        cssSredni_koszt_naprawy.style.borderColor = "red";
+        cssSredni_koszt_naprawyVisibility.style.visibility = "visible";
+      }else{
+        cssSredni_koszt_naprawyVisibility.style.visibility = "hidden";
+        cssSredni_koszt_naprawy.style.borderColor = "green";
+      }
+
+      if(filterProducer === "null"){
+        infoText += "Producer ";
+        cssProducer.style.borderColor = "red";
+      }else{
+        cssProducer.style.borderColor = "green";
+      }
+
+
+      if(infoText.length>0){
+        setTopTableText("Incorrect values");
+        setTopTableTextColor("red");
+      }else{
+        setTopTableText("Correct values")
+        setTopTableTextColor("green");
+
+    }}
   }
   
   useEffect(() => {
-    document.title = 'Filtering data';
     refreashData();
     refreashProducers();
     minMax();
   }, []);
-
   useEffect(() => {
     inputValidChecker();
     filterCars();
@@ -303,36 +352,10 @@ const Generic_Tables = () => {
 
 
 
-
-
-
-  
+ 
   return (
     <>
-      <Header
-        tables={isTablesVisible}
-        
-        filterCars={filterCars}
-        filterCourse={filterCourse}
-        filterPrice={filterPrice}
-        filterRepair={filterRepair}
-        filterText={filterText}
-        filterACValue={filterACValue}
-        
-        priceMin={priceMin}
-        priceMax={priceMax}
-        courseMin={courseMin}
-        courseMax={courseMax}
-        repairMin={repairMin}
-        repairMax={repairMax}
-        
-        
-        producers={producers}
-        handleACbutton={handleACbutton}
-        setFilterProducerFunction={setFilterProducerFunction}
-        handleSliderChange={handleSliderChange}
-        handleFilteredText={handleFilteredText}/>
-
+    <Header/>
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
@@ -347,16 +370,57 @@ const Generic_Tables = () => {
                   </div>
                 </h3>
               </CardHeader>
-
+              <div>
               <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
                   <tr>
-                    <th scope="col" onClick={() =>(refreashData("name", isASC["name"]), toggleSortingOrder("name"))}>Car</th>
-                    <th scope="col" onClick={() =>(refreashData("cena", isASC["cena"]), toggleSortingOrder("cena"))}>Price</th>
-                    <th scope="col" onClick={() =>(refreashData("przebieg", isASC["przebieg"]), toggleSortingOrder("przebieg"))}>Course</th>
-                    <th scope="col" onClick={() =>(refreashData("klimatyzacja", isASC["klimatyzacja"]), toggleSortingOrder("klimatyzacja"))}>AC</th>
-                    <th scope="col" onClick={() =>(refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]), toggleSortingOrder("sredni_koszt_naprawy"))}>Avg repair cost</th>
-                    <th scope="col" onClick={() =>(refreashData("producer", isASC["producer"]), toggleSortingOrder("producer"))}>Producer</th>
+                    <th scope="col">Car model: {"  "}
+                      <input type="text" name="name" value={filterText} onChange={(event)=>handleFilteredText(event)} onKeyUp={filterCars}/>
+                    </th>
+                    <th scope="col">Price
+                      <input
+                        type="range"
+                        min={priceMin}
+                        max={priceMax}
+                        value={filterPrice}
+                        onMouseUp={(event) => handleSliderChange(event, 1)}
+                        onChange={(event) => handleSliderChange(event, 1)}/>
+                    </th>
+                    <th scope="col">Course
+                    <input
+                          type="range"
+                          min={courseMin}
+                          max={courseMax}
+                          value={filterCourse}
+                          onMouseUp={(event) => handleSliderChange(event, 2)}
+                          onChange={(event) => handleSliderChange(event, 2)}/>
+                    </th>
+                    <th scope="col">AC
+                      <button style={{margin:"0px", padding:"1px"}} onClick={handleACbutton}>Change</button>
+                    </th>
+                    <th scope="col">Avg repair cost
+                      <input
+                          type="range"
+                          min={repairMin}
+                          max={repairMax}
+                          value={filterRepair}
+                          onMouseUp={(event) => handleSliderChange(event, 3)}
+                          onChange={(event) => handleSliderChange(event, 3)}/>
+                    </th>
+
+                    <th scope="col">Producer
+                    
+                    <select onChange={(e) => setFilterProducerFunction(e.target.value)}>
+                        <option value="null">All Producers</option>
+                        {Array.isArray(producers) &&
+                          producers !== undefined &&
+                          producers.map((element) => (
+                            <option key={element.ID} value={element.producer}>
+                              {element.producer}
+                            </option>
+                          ))}
+                      </select>
+                    </th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -392,105 +456,160 @@ const Generic_Tables = () => {
                         </DropdownMenu>
                       </UncontrolledDropdown>
                         </tr>
-                    )}):<th colspan={7}>There are no cars that match your requirements</th>}
+                    )}):<th colSpan={7}>There are no cars that match your requirements</th>}
                 </tbody>
               </Table>
+              <CardFooter className="py-4">
+                <nav aria-label="...">
+                  <Pagination
+                    className="pagination justify-content-end mb-0"
+                    listClassName="justify-content-end mb-0"
+                  >
+                    <PaginationItem className="disabled">
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                        tabIndex="-1"
+                      >
+                        <i className="fas fa-angle-left" />
+                        <span className="sr-only">Previous</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem className="active">
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        2 <span className="sr-only">(current)</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        3
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <i className="fas fa-angle-right" />
+                        <span className="sr-only">Next</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                  </Pagination>
+                </nav>
+              </CardFooter>
+              </div>
               </Card>
           :<Card className="shadow">
               
-          <CardHeader className="border-0">
-
-
-
-          <div style={{color:topTableTextColor}}>{topTableText}</div>
-
-
-
-
-          <div style={{float:"right"}} className="mb-0">
-                {currentAction}
-                <button onClick={handleSwitchButton}>change Action</button>
-              </div>
-          </CardHeader>
-        <form onSubmit={handleSubmitForm}>
-           
-           <Table
-            // style={{textAlign:"center"}}
-            className="align-items-center table-flush"
-            responsive
-            
-          >
-            <thead className="thead-light">
-            <tr>
-                <th scope="col">index</th><th>value</th><th>range used in other cars</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <th><label htmlFor="name">Car model: </label></th>
-                <th><input type="text" name="name" id="name" value={formData.name} onChange={handleChange}/></th>
-                <th>e.g. "Chevrolet Camaro"</th>
-
-              </tr>
-
-              <tr>
-                <th><label htmlFor="cena">Price: </label></th>
-                <th><input type="number" step="50" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/></th>
-                <th>{priceMin}$ - {priceMax}$</th>
-              </tr>
+              <CardHeader className="border-0">
               
-              <tr>
-                <th><label htmlFor="przebieg">Course: </label></th>
-                <th><input type="number" step="50"  name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/></th>
-                <th>{courseMin} km - {courseMax} km</th>
+              <h3 className="mb-0"><span style={{color:topTableTextColor}}>{topTableText}</span>
+                <div style={{float:"right"}} className="mb-0">
+                  {currentAction}
+                    <button onClick={handleSwitchButton}>change Action</button>
+                  </div>
+                </h3>
+              </CardHeader>
+            <form onSubmit={handleSubmitForm}>
+               
+               <Table
+                // style={{textAlign:"center"}}
+                className="align-items-center table-flush"
+                responsive
+                
+              >
+                <thead className="thead-light">
+                <tr>
+                    <th scope="col">index</th><th>value</th>
+                  </tr>
+                </thead>
 
-              </tr>
-              
-              <tr>
-                <th><label htmlFor="klimatyzacja">Air Conditioning: </label></th>
-                <th><input type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
-                <th></th>
-              </tr>
-              
-              <tr>
-                <th><label htmlFor="sredni_koszt_naprawy">Average repair price: </label></th>
-                <th><input type="number" step="20" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/></th>
-                <th>{repairMin}$ - {repairMax}$</th>
+                <tbody>
+                  <tr>
+                    <th><label htmlFor="name">Car model: </label></th>
+                    <th>
+                      <input style={{float:"left"}} type="text" name="name" id="name" value={formData.name} onChange={handleChange}/>
+                      <span id="nameVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>e.g. "Chevrolet Camaro"</span>
+                    </th>
+                  </tr>
 
-              </tr>
-              
-              <tr>
-                <th>Producer</th>
-                <th>
-                  <select name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
-                    <option value="null"></option>
-                    {Array.isArray(producers) &&
-                      producers !== undefined &&
-                      producers.map((element) => (
-                        <option key={element.id} value={element.id}>
-                          {element.producer}
-                        </option>
-                      ))}
-                  </select>
-                </th>
-                <th></th>
-              </tr>
+                  <tr>
+                    <th><label htmlFor="cena">Price: </label></th>
+                    <th>
+                      <input style={{float:"left"}} type="number" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/>
+                      <span id="cenaVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {priceMin}$ - {priceMax}$</span>
+                    </th>
+                  </tr>
+                  
+                  <tr>
+                    <th><label htmlFor="przebieg">Course: </label></th>
+                    <th>
+                      <input style={{float:"left"}} type="number" name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/>
+                      <span id="przebiegVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {courseMin} km - {courseMax} km</span>
+                    </th>
 
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colSpan={3} style={{textAlign:"center"}}>
-                  <button type="submit" disabled={topTableTextColor === "red"}>Wyślij</button>
-                </th>
-              </tr>
-            </tfoot>
-          </Table>
-        </form>
+                  </tr>
+                  
+                  <tr>
+                    <th><label htmlFor="klimatyzacja">Air Conditioning: </label></th>
+                    <th><input style={{float:"left"}} type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
+                    
+                  </tr>
+                  
+                  <tr>
+                    <th><label htmlFor="sredni_koszt_naprawy">Average repair price: </label></th>
+                    <th>
+                      <input style={{float:"left"}} type="number" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/>
+                      <span id="sredni_koszt_naprawyVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {repairMin}$ - {repairMax}$</span>
+                    </th>
+                    
+
+                  </tr>
+                  
+                  <tr>
+                    <th>Producer</th>
+                    <th>
+                      <select id="producer" name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
+                        <option value="null"></option>
+                        {Array.isArray(producers) &&
+                          producers !== undefined &&
+                          producers.map((element) => (
+                            <option key={element.id} value={element.id}>
+                              {element.producer}
+                            </option>
+                          ))}
+                      </select>
+                    </th>
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th colSpan={3} style={{textAlign:"center"}}>
+                      <button type="submit" disabled={topTableTextColor === "red"}>Wyślij</button>
+                    </th>
+                  </tr>
+                </tfoot>
+              </Table>
+            </form>
 
 
 
-        </Card>}
+            </Card>}
           </div>
         </Row>
       </Container>

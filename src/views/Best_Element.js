@@ -1,26 +1,24 @@
 class Best_Element{
     //główna funkcja
     onLoad(data, weights, sorted){
-        this.elementData = data;
+        let elementData = data;
+        
         //nazwy wszystkich kluczy tablic które potem są użyte aby kod działał automatycznie
-        const keys = Object.keys(this.elementData[0]);
+        const keys = Object.keys(elementData[0]);
         const {low, high, new_weights} = this.calculateWeight(keys, weights);
+        
 
         // ten skrawek kodu generuje bloki poszczególnych kluczy które sprawdzają który element jest najlepszy pod względem tego klucza
         keys.slice(2, -1).forEach(key =>{
-            this.elementData.sort((a, b) => a[key] - b[key])
+            elementData.sort((a, b) => a[key] - b[key])
 
             // ustawienie najmniejszych oraz największych wartości danego klucza
-            low[key] = this.elementData[0][key];
-            high[key] = this.elementData[this.elementData.length - 1][key];
-
-
+            low[key] = elementData[0][key];
+            high[key] = elementData[elementData.length - 1][key];
         });
-
-        const winning_data = this.result(high, keys, new_weights, sorted);
-
-
+        const winning_data = this.result(high, keys, new_weights, sorted, elementData);
         return({winning_data})
+
     }
 
 
@@ -51,7 +49,8 @@ class Best_Element{
 
 
     // funkcja podsumowująca dane
-    result(high,  keys, weight, sorted){
+    result(high,  keys, weight, sorted, oldElementData){
+        let elementData = oldElementData;
         let forData = {};
         let confirms = {}
         for (let key in sorted[0]) {
@@ -61,9 +60,8 @@ class Best_Element{
         }
         let winning_data = [];
         confirms = forData;
-        
-        console.log(this.elementData)
-        this.elementData.forEach(element => {
+
+        elementData.map(element => {
             let sum = 0;
             let element_data = {};
 
@@ -88,7 +86,6 @@ class Best_Element{
                     element_data[key] = 0;
                 }
             })
-            console.log(element_data)
 
             winning_data.push({"name": element.name, "sum": sum,
              "cena":element_data["cena"] - element_data["cena"] * weight["cena"],
@@ -112,7 +109,7 @@ class Best_Element{
             element["sum"] = element["sum"]/countWeight;
         });
         winning_data.sort((a,b)=> b["sum"] - a["sum"])
-
+        
         return winning_data;
     }
 }

@@ -94,14 +94,13 @@ const Index = (props) => {
     .then(data => {
       const test = new Best_Element();
       let results = []
-      if(filteredCars.length > 0){
-        results = test.onLoad(filteredCars, weight, sorted).winning_data;
-        
-      }else{
-        results = test.onLoad(data, weight, sorted).winning_data;
-
+      while(results.length == 0){
+        if(filteredCars.length > 0){
+          results = test.onLoad(filteredCars, weight, sorted).winning_data;
+        }else{
+          results = test.onLoad(data, weight, sorted).winning_data;
+        }
       }
-      console.log(results)
       let names = [];
       let sum = [];
       let prices = [];
@@ -387,7 +386,8 @@ const Index = (props) => {
       sklsV = {setKlimatyzacjaSliderValue}
       skosV = {setKosztSliderValue}
 
-      index={true}
+      // index={true}
+      tables={true}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
