@@ -69,7 +69,21 @@ const Index = (props) => {
   const [bestCar, setBestCar] = useState("")
   const [bestProducer, setBestProducer] = useState("")
   const [sorted, setSorted] = useState({})
-  
+
+
+  const [priceMin, setPriceMin] = useState(0);
+  const [priceMax, setPriceMax] = useState(0);
+  const [courseMin, setCourseMin] = useState(0);
+  const [courseMax, setCourseMax] = useState(0);
+  const [repairMin, setRepairMin] = useState(0);
+  const [repairMax, setRepairMax] = useState(0);
+  const [priceRange, setPriceRange] = useState([priceMin, priceMax]);
+  const [courseRange, setCourseRange] = useState([courseMin, courseMax]);
+  const [repairRange, setRepairRange] = useState([priceMin, priceMax]);
+  const [filteredCars, setFilteredCars] = useState({});
+
+
+  const minDistance = 10;
 
   const toggleSortingOrder = (columnName) => {
     const currentOrder = isASC[columnName];
@@ -87,27 +101,22 @@ const Index = (props) => {
     UpdateCharts(index)
   };
 
-  function UpdateCharts(index, filteredCars={}) {
+  function UpdateCharts(index, carsData={}) {
 
-    fetch(`http://localhost:3040/data`)
-    .then(response => response.json())
-    .then(data => {
       const test = new Best_Element();
       let results = []
-      while(results.length == 0){
-        if(filteredCars.length > 0){
-          results = test.onLoad(filteredCars, weight, sorted).winning_data;
-        }else{
-          results = test.onLoad(data, weight, sorted).winning_data;
-        }
-      }
+      if(filteredCars.length > 0){
+        results = test.onLoad(filteredCars, weight, sorted).winning_data;
+        setBestCar(results[0].name)
+
+      
+      
       let names = [];
       let sum = [];
       let prices = [];
       let km = [];
       let AC = [];
       let repair = [];
-      setBestCar(results[0].name)
       results.map(element =>{
         names.push(element.name);
         sum.push(element.sum);
@@ -226,24 +235,15 @@ const Index = (props) => {
     }
     producent_result.sort((a, b) => b.sum - a.sum)
     setBestProducer(producent_result[0].name)
-
+    let chartProducer = producent_result.slice(0,6);
+    console.log(chartProducer)
 
     chart2Data = {
-      labels: [producent_result[0].name,
-        producent_result[1].name,
-        producent_result[2].name,
-          producent_result[3].name,
-          producent_result[4].name,
-            producent_result[5].name],
+      labels: chartProducer.map(element=>element.name),
       datasets: [
         {
           label: "Sales",
-          data: [producent_result[0].sum,
-                  producent_result[1].sum,
-                    producent_result[2].sum,
-                    producent_result[3].sum,
-                      producent_result[4].sum,
-                      producent_result[5].sum],
+          data: chartProducer.map(element=>element.sum),
           maxBarThickness: 10,
         },
       ],
@@ -254,12 +254,63 @@ const Index = (props) => {
     
     chartExample2.data2 = (canvas) => chart2Data;
     setBarData(chart2Data);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-    }
+  }else{
+    setBestCar("no car matches your preferences")
+  }
 
+
+}
+
+    const minMax = () =>{
+      fetch(`http://localhost:3040/data`)
+      .then(response => response.json())
+      .then(data => {
+        let maxPrice = 0;
+        let maxCourse = 0;
+        let maxRepair = 0;
+        data.map(element =>{
+          if(element.cena > maxPrice){
+            maxPrice = element.cena;
+          }
+          if(element.przebieg > maxCourse){
+            maxCourse = element.przebieg;
+          }
+          if(element.sredni_koszt_naprawy > maxRepair){
+            maxRepair = element.sredni_koszt_naprawy;
+          }
+        })
+        let minPrice = maxPrice;
+        let minCourse = maxCourse;
+        let minRepair = maxRepair;
+        data.map(element=>{
+          if (element.cena < minPrice){
+            minPrice = element.cena;
+          }
+          if(element.przebieg < minCourse){
+            minCourse = element.przebieg;
+          }
+          if(element.sredni_koszt_naprawy < minRepair){
+            minRepair = element.sredni_koszt_naprawy;
+          }
+        })
+
+        setPriceMin(minPrice);
+        setPriceMax(maxPrice);
+        setPriceRange([minPrice,maxPrice])
+  
+        setCourseMin(minCourse);
+        setCourseMax(maxCourse);
+        setCourseRange([minCourse,maxCourse])
+        
+        setRepairMin(minRepair);
+        setRepairMax(maxRepair);
+        setRepairRange([minRepair, maxRepair])
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+      });
+      
+    }
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -353,9 +404,49 @@ const Index = (props) => {
       });
   }
 
+  const handleNewSliderChange = (event, newValue, activeThumb, type) => {
+    if (!Array.isArray(newValue)) {
+      return;
+    }
+    if (type === 1){
+      if (activeThumb === 0) {
+        setPriceRange([Math.min(newValue[0], priceRange[1] - minDistance), priceRange[1]]);
+      } else {
+        setPriceRange([priceRange[0], Math.max(newValue[1], priceRange[0] + minDistance)]);
+      }
+    }
+    if (type === 2){
+      if (activeThumb === 0) {
+        setCourseRange([Math.min(newValue[0], courseRange[1] - minDistance), courseRange[1]]);
+      } else {
+        setCourseRange([courseRange[0], Math.max(newValue[1], courseRange[0] + minDistance)]);
+      }
+    }
+    if (type === 3){
+      if (activeThumb === 0) {
+        setRepairRange([Math.min(newValue[0], repairRange[1] - minDistance), repairRange[1]]);
+      } else {
+        setRepairRange([repairRange[0], Math.max(newValue[1], repairRange[0] + minDistance)]);
+      }
+    }
+    filterCars();
+  }
 
-
-
+  const filterCars = () =>{
+  
+    let new_car_data = cars.filter(car=>
+      car.cena >= priceRange[0]
+          && car.cena <= priceRange[1]
+            && car.przebieg >= courseRange[0]
+            && car.przebieg <= courseRange[1]
+                && car.sredni_koszt_naprawy >= repairRange[0]
+                  && car.sredni_koszt_naprawy <= repairRange[1]
+    
+    );
+    // console.log(new_car_data)
+    setFilteredCars(new_car_data);
+    UpdateCharts(1,new_car_data);
+  }
 
 
   useEffect(() => {
@@ -363,31 +454,35 @@ const Index = (props) => {
     refreashData();
     refreashProducers();
     fetchWeights();
-    UpdateCharts(1);
+    minMax();
   }, []);
 
   useEffect(() => {
     UpdateCharts(1);
   }, [cars]);
 
-
   return (
     <>
       <Header 
-      fetchDataAndUpdateCharts={UpdateCharts}
+      UpdateCharts={UpdateCharts}
       handleSliderChange={handleSliderChange}
-      csV = {cenaSliderValue}
-      psV = {przebiegSliderValue}
-      klsV = {klimatyzacjaSliderValue}
-      kosV = {kosztSliderValue}
+      priceMin = {priceMin}
+      priceMax = {priceMax}
+      courseMin = {courseMin}
+      courseMax = {courseMax}
+
+      repairMin = {repairMin}
+      repairMax = {repairMax}
+      priceRange = {priceRange}
+      courseRange = {courseRange}
+      repairRange = {repairRange}
       
-      scsV = {setCenaSliderValue}
+      handleNewSliderChange = {handleNewSliderChange}
       spsV = {setPrzebiegSliderValue}
       sklsV = {setKlimatyzacjaSliderValue}
       skosV = {setKosztSliderValue}
 
-      // index={true}
-      tables={true}
+      index={true}
       />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -398,9 +493,9 @@ const Index = (props) => {
                 <Row className="align-items-center">
                   <div className="col">
                     <h6 className="text-uppercase text-light ls-1 mb-1">
-                      Cars
+                      {"Cars matching your preferences: "+ filteredCars.length}
                     </h6>
-                    <h2 className="text-white mb-0">{bestCar}</h2>
+                    <h2 className="text-white mb-0">{bestCar === "no car matches your preferences"? bestCar :"Best option: " + bestCar}</h2>
                   </div>
                   <div className="col">
                     <Nav className="justify-content-end" pills>

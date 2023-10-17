@@ -356,7 +356,7 @@ const Tables = () => {
       setCurrentPagination(currentPagination-1);
 
     }else{
-      if(buttonNumber === "next" && currentPagination < filteredCars.length){
+      if(buttonNumber === "next" && currentPagination < filteredCars.length/paginationDataCount){
         setCurrentPagination(currentPagination+1);
       }else{
         if (buttonNumber !== "previous" && buttonNumber !== "next"){
@@ -365,24 +365,6 @@ const Tables = () => {
       }
     }
 
-    if(currentPagination-1 > 1){
-      setIsPreviousActive(true);
-    }else{
-      setIsNextActive(true);
-
-      setIsPreviousActive(false);
-    }
-    console.log(filteredCars.length/paginationDataCount)
-    if(currentPagination+1 < filteredCars.length/paginationDataCount){
-      setIsNextActive(true);
-    }else{
-      setIsNextActive(false);
-      setIsPreviousActive(true);
-
-    }
-
-
-    console.log(currentPagination)
 
   }
 

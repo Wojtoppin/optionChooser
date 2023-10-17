@@ -18,6 +18,7 @@
 
 // reactstrap components
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
+import Slider from '@mui/material/Slider';
 
 const Header = (props) => {
 
@@ -27,7 +28,9 @@ const Header = (props) => {
         <Container fluid>
           <div className="header-body">
             {props.index && <Row>
-              <Col lg="6" xl="3">
+              
+              
+              <Col lg="6" xl="4">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
@@ -38,8 +41,19 @@ const Header = (props) => {
                         >
                           Price
                         </CardTitle>
-                        <input type="range" min={0} max={100} value={props.csV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)} onChange={(event)=>props.handleSliderChange(event,1)}/>
+
+                        <Slider
+                          style={{ width: "15vw" }}
+                          min={props.priceMin}
+                          max={props.priceMax}
+                          step={1}
+                          value={props.priceRange}
+                          onChange={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 1)}
+                          onChangeCommitted={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 1)}
+                          disableSwap
+                        />
                       </div>
+
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
                           <i className="ni ni-money-coins" />
@@ -47,14 +61,20 @@ const Header = (props) => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
+                      
                       <span className="text-danger mr-2">
-                         {props.csV}
+                         {props.priceRange[0] + "$ - " + props.priceRange[1]}$
                       </span>
                     </p>
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg="6" xl="3">
+              
+              
+              
+              
+              
+              <Col lg="6" xl="4">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
@@ -66,7 +86,20 @@ const Header = (props) => {
                           Course
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          <input type="range" min={0} max={100} value={props.psV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)}  onChange={(((event)=>props.handleSliderChange(event,2)))}/>
+
+
+                          <Slider
+                            style={{ width: "15vw" }}
+
+                            min={props.courseMin}
+                            max={props.courseMax}
+                            step={1}
+                            value={props.courseRange}
+                            onChange={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 2)}
+                            onChangeCommitted={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 2)}
+                            disableSwap
+                          />
+
                           </span>
                       </div>
                       <Col className="col-auto">
@@ -76,43 +109,20 @@ const Header = (props) => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
+                      {/* {"Cars: "} */}
                       <span className="text-danger mr-2">
-                        {props.psV}
+                         {props.courseRange[0] + "km - " + props.courseRange[1]}km
                       </span>
                     </p>
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          Air Conditioning
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">
-                          <input type="range" min={0} max={100} value={props.klsV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)}  onChange={(((event)=>props.handleSliderChange(event,3)))}/>
-                        </span>
-                      </div>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                          <i className="ni ni-sound-wave" />
-                        </div>
-                      </Col>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-warning mr-2">
-                        {props.klsV}
-                      </span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
+              
+              
+              
+              
+              
+              <Col lg="6" xl="4">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
@@ -124,7 +134,16 @@ const Header = (props) => {
                           Average repair cost
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                        <input type="range" min={0} max={100} value={props.kosV} onMouseUp={() => props.fetchDataAndUpdateCharts(1)}  onChange={(((event)=>props.handleSliderChange(event,4)))}/>
+                        <Slider
+                            style={{ width: "15vw" }}
+                            min={props.repairMin}
+                            max={props.repairMax}
+                            step={1}
+                            value={props.repairRange}
+                            onChange={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 3)}
+                            onChangeCommitted={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 3)}
+                            disableSwap
+                          />
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -134,8 +153,9 @@ const Header = (props) => {
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
+                      
                       <span className="text-danger mr-2">
-                        {props.kosV}
+                         {props.repairRange[0] + "$ - " + props.repairRange[1]}$
                       </span>
                     </p>
                   </CardBody>
