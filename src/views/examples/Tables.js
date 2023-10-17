@@ -16,10 +16,9 @@
 
 */
 import { useEffect, useState } from "react";
-
 // reactstrap components
+import Slider from '@mui/material/Slider';
 import {
-  Badge,
   Card,
   CardHeader,
   CardFooter,
@@ -27,15 +26,12 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Media,
   Pagination,
   PaginationItem,
   PaginationLink,
-  Progress,
   Table,
   Container,
   Row,
-  UncontrolledTooltip,
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
@@ -46,9 +42,6 @@ const Tables = () => {
 
   const [filteredCars, setFilteredCars] = useState({});
   const [filterText, setFilterText] = useState('');
-  const [filterPrice, setFilterPrice] = useState(0);
-  const [filterCourse, setFilterCourse] = useState(0);
-  const [filterRepair, setFilterRepair] = useState(0);
   const [filterProducer, setFilterProducer] = useState("null");
   const [filterACValue, setFilterACValue] = useState("");
 
@@ -58,6 +51,9 @@ const Tables = () => {
   const [courseMax, setCourseMax] = useState(0);
   const [repairMin, setRepairMin] = useState(0);
   const [repairMax, setRepairMax] = useState(0);
+  const [priceRange, setPriceRange] = useState([priceMin, priceMax]);
+  const [courseRange, setCourseRange] = useState([courseMin, courseMax]);
+  const [repairRange, setRepairRange] = useState([priceMin, priceMax]);
   
   const [isTablesVisible, setIsTablesVisible] = useState(true);
   const [currentAction, setCurrentAction] = useState("Filtering data ");
@@ -65,7 +61,12 @@ const Tables = () => {
   const [topTableText, setTopTableText] = useState("")
   const [topTableTextColor, setTopTableTextColor] = useState("red")//rgb(255, 0, 0)  rgb(0, 255, 0)
 
+  const [currentPagination, setCurrentPagination] = useState(1)
+  const [paginationDataCount, setPaginationDataCount] = useState(10)
+  const [isPreviousActive, setIsPreviousActive] = useState(true);
+  const [isNextActive, setIsNextActive] = useState(true);
 
+  const minDistance = 10;
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -115,18 +116,18 @@ const Tables = () => {
           minRepair = element.sredni_koszt_naprawy;
         }
       })
-      setFilterPrice(maxPrice);
-      setFilterCourse(maxCourse);
-      setFilterRepair(maxRepair);
 
       setPriceMin(minPrice);
       setPriceMax(maxPrice);
+      setPriceRange([minPrice,maxPrice])
 
       setCourseMin(minCourse);
       setCourseMax(maxCourse);
+      setCourseRange([minCourse,maxCourse])
       
       setRepairMin(minRepair);
       setRepairMax(maxRepair);
+      setRepairRange([minRepair, maxRepair])
     })
     .catch(error => {
         console.error('Error fetching data:', error);
@@ -152,36 +153,50 @@ const Tables = () => {
     
     let new_car_data = cars.filter(
       (car) => car.name.toLowerCase().includes(filterText.toLowerCase())
-        && car.cena <= filterPrice
-          && car.przebieg <= filterCourse
-            && car.sredni_koszt_naprawy <= filterRepair
-              && (filterProducer  !== "null"? car.producer === filterProducer: true)
-               && (filterACValue === "works"? car.klimatyzacja === 1 : filterACValue === ""? true: car.klimatyzacja === 0)
+        && car.cena >= priceRange[0]
+          && car.cena <= priceRange[1]
+            && car.przebieg >= courseRange[0]
+            && car.przebieg <= courseRange[1]
+                && car.sredni_koszt_naprawy >= repairRange[0]
+                  && car.sredni_koszt_naprawy <= repairRange[1]
+                    && (filterProducer  !== "null"? car.producer === filterProducer: true)
+                          && (filterACValue === "works"? car.klimatyzacja === 1 || car.klimatyzacja===0.5 : filterACValue === ""? true: car.klimatyzacja === 0)
     );
     setFilteredCars(new_car_data);
-
+    handlePaginationChange(0,1);
   }
 
   const handleFilteredText = (event) =>{
     setFilterText(event.target.value)
   }
 
-  const handleSliderChange = (event, num) => {
-    const newValue = parseInt(event.target.value);
-    console.log(newValue)
-    if(num === 1){
-      setFilterPrice(newValue);
-      filterCars();
-    }else{
-      if (num === 2){
-        setFilterCourse(newValue);
-        filterCars();
-      }else{
-        setFilterRepair(newValue);
-        filterCars();
-      }
-      
+  const handleNewSliderChange = (event, newValue, activeThumb, type) => {
+    if (!Array.isArray(newValue)) {
+      return;
     }
+    if (type === 1){
+      if (activeThumb === 0) {
+        setPriceRange([Math.min(newValue[0], priceRange[1] - minDistance), priceRange[1]]);
+      } else {
+        setPriceRange([priceRange[0], Math.max(newValue[1], priceRange[0] + minDistance)]);
+      }
+    }
+    if (type === 2){
+      if (activeThumb === 0) {
+        setCourseRange([Math.min(newValue[0], courseRange[1] - minDistance), courseRange[1]]);
+      } else {
+        setCourseRange([courseRange[0], Math.max(newValue[1], courseRange[0] + minDistance)]);
+      }
+    }
+    if (type === 3){
+      if (activeThumb === 0) {
+        setRepairRange([Math.min(newValue[0], repairRange[1] - minDistance), repairRange[1]]);
+      } else {
+        setRepairRange([repairRange[0], Math.max(newValue[1], repairRange[0] + minDistance)]);
+      }
+    }
+    
+    filterCars();
   };
 
   const setFilterProducerFunction = (producer) =>{
@@ -333,6 +348,46 @@ const Tables = () => {
     }}
   }
   
+  const handlePaginationChange = (event, buttonNumber) =>{
+    if(event !== 0){
+      event.preventDefault();
+    }
+    if(buttonNumber === "previous" && currentPagination !== 1){
+      setCurrentPagination(currentPagination-1);
+
+    }else{
+      if(buttonNumber === "next" && currentPagination < filteredCars.length){
+        setCurrentPagination(currentPagination+1);
+      }else{
+        if (buttonNumber !== "previous" && buttonNumber !== "next"){
+          setCurrentPagination(buttonNumber);
+        }
+      }
+    }
+
+    if(currentPagination-1 > 1){
+      setIsPreviousActive(true);
+    }else{
+      setIsNextActive(true);
+
+      setIsPreviousActive(false);
+    }
+    console.log(filteredCars.length/paginationDataCount)
+    if(currentPagination+1 < filteredCars.length/paginationDataCount){
+      setIsNextActive(true);
+    }else{
+      setIsNextActive(false);
+      setIsPreviousActive(true);
+
+    }
+
+
+    console.log(currentPagination)
+
+  }
+
+
+
   useEffect(() => {
     refreashData();
     refreashProducers();
@@ -375,44 +430,68 @@ const Tables = () => {
               <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
                   <tr>
-                    <th scope="col">Car model: {"  "}
+                    <th scope="col">Car model
+                    </th>
+                    <th scope="col">Price {"<" + priceRange[0] + ", " + priceRange[1] + ">"}
+                    </th>
+                    <th scope="col">Course {"<" + courseRange[0] + ", " + courseRange[1] + ">"}</th>
+                    <th scope="col">AC</th>
+                    <th scope="col">AVG repair cost {"<" + repairRange[0] + ", " + repairRange[1] + ">"}</th>
+
+                    <th scope="col">Producer</th>
+                    <th scope="col"></th>
+                  </tr>
+
+
+                  <tr>
+                    <th scope="col">
                       <input type="text" name="name" value={filterText} onChange={(event)=>handleFilteredText(event)} onKeyUp={filterCars}/>
                     </th>
-                    <th scope="col">Price
-                      <input
-                        type="range"
+                    <th scope="col">
+                      <Slider
+                        style={{ width: "6vw" }}
                         min={priceMin}
                         max={priceMax}
-                        value={filterPrice}
-                        onMouseUp={(event) => handleSliderChange(event, 1)}
-                        onChange={(event) => handleSliderChange(event, 1)}/>
+                        step={1}
+                        value={priceRange}
+                        onChange={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 1)}
+                        onChangeCommitted={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 1)}
+                        disableSwap
+                      />
+                    
                     </th>
-                    <th scope="col">Course
-                    <input
-                          type="range"
-                          min={courseMin}
-                          max={courseMax}
-                          value={filterCourse}
-                          onMouseUp={(event) => handleSliderChange(event, 2)}
-                          onChange={(event) => handleSliderChange(event, 2)}/>
+                    <th scope="col">
+                      <Slider
+                        style={{ width: "6vw" }}
+                        min={courseMin}
+                        max={courseMax}
+                        step={1}
+                        value={courseRange}
+                        onChange={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 2)}
+                        onChangeCommitted={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 2)}
+                        disableSwap
+                      />
                     </th>
-                    <th scope="col">AC
+                    <th scope="col">
                       <button style={{margin:"0px", padding:"1px"}} onClick={handleACbutton}>Change</button>
                     </th>
-                    <th scope="col">Avg repair cost
-                      <input
-                          type="range"
+                    <th scope="col">
+                      <Slider
+                          style={{ width: "6vw" }}
                           min={repairMin}
                           max={repairMax}
-                          value={filterRepair}
-                          onMouseUp={(event) => handleSliderChange(event, 3)}
-                          onChange={(event) => handleSliderChange(event, 3)}/>
+                          step={1}
+                          value={repairRange}
+                          onChange={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 3)}
+                          onChangeCommitted={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 3)}
+                          disableSwap
+                        />
                     </th>
 
-                    <th scope="col">Producer
+                    <th scope="col">
                     
                     <select onChange={(e) => setFilterProducerFunction(e.target.value)}>
-                        <option value="null">All Producers</option>
+                        <option value="null"></option>
                         {Array.isArray(producers) &&
                           producers !== undefined &&
                           producers.map((element) => (
@@ -426,11 +505,11 @@ const Tables = () => {
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(filteredCars) && filteredCars.length > 0 ? filteredCars.map(element =>{
+                {Array.isArray(filteredCars) && filteredCars.length > 0 ? filteredCars.slice((currentPagination-1) * paginationDataCount ,currentPagination * paginationDataCount).map(element =>{
                       return(
                         <tr>
                           {/* <th scope="row">{element.ID}</th> */}
-                          <th scope="row">{element.name}</th>
+                          <th scope="row"><h6>{element.name}</h6></th>
                           <td>{element.cena}</td>
                           <td>{element.przebieg}</td>
                           <td>{element.klimatyzacja}</td>
@@ -462,48 +541,53 @@ const Tables = () => {
               </Table>
               <CardFooter className="py-4">
                 <nav aria-label="...">
+                
                   <Pagination
                     className="pagination justify-content-end mb-0"
                     listClassName="justify-content-end mb-0"
                   >
-                    <PaginationItem className="disabled">
+                    {/* <PaginationItem className="disabled"> */}
+                    <PaginationItem className={isPreviousActive? "":"disabled"}>
                       <PaginationLink
                         href="#pablo"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => handlePaginationChange(e,"previous")}
                         tabIndex="-1"
                       >
                         <i className="fas fa-angle-left" />
                         <span className="sr-only">Previous</span>
                       </PaginationLink>
                     </PaginationItem>
-                    <PaginationItem className="active">
+                    <PaginationItem  className={currentPagination === 1? "active": ""} >
                       <PaginationLink
                         href="#pablo"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => handlePaginationChange(e,currentPagination === 1? 1:currentPagination-1)}
                       >
-                        1
+                        {currentPagination === 1? "1":currentPagination-1}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem   className={currentPagination !== 1? "active": ""}>
+                      <PaginationLink
+                        href="#pablo"
+                        onClick={(e) => handlePaginationChange(e,currentPagination === 1? 2:currentPagination)}
+                      >
+                        {currentPagination === 1? "2":currentPagination}
+
                       </PaginationLink>
                     </PaginationItem>
                     <PaginationItem>
                       <PaginationLink
                         href="#pablo"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => handlePaginationChange(e,currentPagination === 1? 3:currentPagination+1)}
                       >
-                        2 <span className="sr-only">(current)</span>
+                        {currentPagination === 1? "3":currentPagination+1}
+
                       </PaginationLink>
                     </PaginationItem>
-                    <PaginationItem>
+
+                    <PaginationItem className={isNextActive? "":"disabled"}>
                       <PaginationLink
                         href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => handlePaginationChange(e,"next")}
                       >
                         <i className="fas fa-angle-right" />
                         <span className="sr-only">Next</span>
