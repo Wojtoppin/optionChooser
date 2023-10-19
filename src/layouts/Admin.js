@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
@@ -28,6 +28,10 @@ import routes from "routes.js";
 import generic_routes from "generic_routes.js";
 
 const Admin = (props) => {
+  const [generic_table, setGeneric_table] = useState([])
+  const [generic_tableValues, setGeneric_tableValues] = useState([])
+
+
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -52,8 +56,9 @@ const Admin = (props) => {
   const getGenericRoutes = (generic_routes) => {
     return generic_routes.map((prop, key) => {
       if (prop.layout === "/admin") {
+        const elementWithProps = React.cloneElement(prop.component, {setGeneric_table, generic_table, setGeneric_tableValues, generic_tableValues});
         return (
-          <Route path={prop.path} element={prop.component} key={key} exact />
+          <Route path={prop.path} element={elementWithProps} key={key} exact />
         );
       } else {
         return null;

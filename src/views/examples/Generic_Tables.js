@@ -26,6 +26,7 @@ import {
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
+  Button,
   DropdownToggle,
   Media,
   Pagination,
@@ -36,322 +37,45 @@ import {
   Container,
   Row,
   UncontrolledTooltip,
+  Input,
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
 
-const Generic_Tables = () => {
-  const [producers, setProducers] = useState({});
-  const [cars, setCars] = useState([]);
+const Generic_Tables = (props) => {
 
-  const [filteredCars, setFilteredCars] = useState({});
-  const [filterText, setFilterText] = useState('');
-  const [filterPrice, setFilterPrice] = useState(0);
-  const [filterCourse, setFilterCourse] = useState(0);
-  const [filterRepair, setFilterRepair] = useState(0);
-  const [filterProducer, setFilterProducer] = useState("null");
-  const [filterACValue, setFilterACValue] = useState("");
 
-  const [priceMin, setPriceMin] = useState(0);
-  const [priceMax, setPriceMax] = useState(0);
-  const [courseMin, setCourseMin] = useState(0);
-  const [courseMax, setCourseMax] = useState(0);
-  const [repairMin, setRepairMin] = useState(0);
-  const [repairMax, setRepairMax] = useState(0);
   
   const [isTablesVisible, setIsTablesVisible] = useState(true);
   const [currentAction, setCurrentAction] = useState("Filtering data ");
-  const [formData, setFormData] = useState({name: "", cena: 0, przebieg:0, klimatyzacja:0, sredni_koszt_naprawy:0});
-  const [topTableText, setTopTableText] = useState("")
-  const [topTableTextColor, setTopTableTextColor] = useState("red")//rgb(255, 0, 0)  rgb(0, 255, 0)
+  const [newData, setNewData] = useState([]);
 
-
-
-  const refreashData = (code="", direction="") =>{
-    let link = `http://localhost:3040/data`;
-    if(code !== "" && direction !== ""){
-        link += `/${direction}/${code}`;
-    }
-    fetch(link)
-    .then(response => response.json())
-    .then(data => {
-        setCars(data);
-        setFilteredCars(data);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-  }
-
-  const minMax = () =>{
-    fetch(`http://localhost:3040/data`)
-    .then(response => response.json())
-    .then(data => {
-      let maxPrice = 0;
-      let maxCourse = 0;
-      let maxRepair = 0;
-      data.map(element =>{
-        if(element.cena > maxPrice){
-          maxPrice = element.cena;
-        }
-        if(element.przebieg > maxCourse){
-          maxCourse = element.przebieg;
-        }
-        if(element.sredni_koszt_naprawy > maxRepair){
-          maxRepair = element.sredni_koszt_naprawy;
-        }
-      })
-      let minPrice = maxPrice;
-      let minCourse = maxCourse;
-      let minRepair = maxRepair;
-      data.map(element=>{
-        if (element.cena < minPrice){
-          minPrice = element.cena;
-        }
-        if(element.przebieg < minCourse){
-          minCourse = element.przebieg;
-        }
-        if(element.sredni_koszt_naprawy < minRepair){
-          minRepair = element.sredni_koszt_naprawy;
-        }
-      })
-      setFilterPrice(maxPrice);
-      setFilterCourse(maxCourse);
-      setFilterRepair(maxRepair);
-
-      setPriceMin(minPrice);
-      setPriceMax(maxPrice);
-
-      setCourseMin(minCourse);
-      setCourseMax(maxCourse);
-      
-      setRepairMin(minRepair);
-      setRepairMax(maxRepair);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-    
-  }
-
-  const refreashProducers = () =>{
-    let link = `http://localhost:3040/producent`;
-    
-    fetch(link)
-    .then(response => response.json())
-    .then(data => {
-        setProducers(data);
-
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
-  }
-
-  const filterCars = () =>{
-    
-    let new_car_data = cars.filter(
-      (car) => car.name.toLowerCase().includes(filterText.toLowerCase())
-        && car.cena <= filterPrice
-          && car.przebieg <= filterCourse
-            && car.sredni_koszt_naprawy <= filterRepair
-              && (filterProducer  !== "null"? car.producer === filterProducer: true)
-               && (filterACValue === "works"? car.klimatyzacja === 1 : filterACValue === ""? true: car.klimatyzacja === 0)
-    );
-    setFilteredCars(new_car_data);
-
-  }
-
-  const handleFilteredText = (event) =>{
-    setFilterText(event.target.value)
-  }
-
-  const handleSliderChange = (event, num) => {
-    const newValue = parseInt(event.target.value);
-    if(num === 1){
-      setFilterPrice(newValue);
-      filterCars();
-    }else{
-      if (num === 2){
-        setFilterCourse(newValue);
-        filterCars();
-      }else{
-        setFilterRepair(newValue);
-        filterCars();
-      }
-      
-    }
-  };
-
-  const setFilterProducerFunction = (producer) =>{
-    setFilterProducer(producer);
-  }
-
-  const handleSwitchButton = () =>{
-    const question = currentAction === "Filtering data ";
-    setCurrentAction(question ? "Adding data ": "Filtering data ");
-    setIsTablesVisible(!question);
-    inputValidChecker();
-    document.title = document.title === 'Filtering data' ? 'Adding data': 'Filtering data';
-  }
-
-  const handleACbutton = () =>{
-    if (filterACValue === ""){
-      setFilterACValue("works")
-    }else{
-      if (filterACValue === "works"){
-        setFilterACValue("doesn't work")
-      }else{
-        setFilterACValue("")
-      }
-    }
-  }
-
-  const handleSubmitForm = (event) =>{
-    let new_form_data = {name: formData.name, cena: formData.cena, przebieg: formData.przebieg, klimatyzacja: formData.klimatyzacja, sredni_koszt_naprawy:formData.sredni_koszt_naprawy, producer_id:filterProducer}
-  
-    event.preventDefault();
-    fetch('http://localhost:3040/addData', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(new_form_data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        refreashData();
-        setTopTableText('Response from server:' +  data.message);
-        setTopTableTextColor("green");
-        setFormData({ name: "", cena: 0, przebieg: 0, klimatyzacja: 0, sredni_koszt_naprawy: 0});
-
-    })
-    .catch(error => {
-        setTopTableText('Error sending POST request');
-        setTopTableTextColor("red");
-
-        console.error('Error sending POST request:', error);
-    });
-  }
 
   const handleChange = (event) =>{
-    
     let {name, value, type, checked} = event.target;
     if (type === "checkbox"){
-        setFormData((data)=>({
+        setNewData((data)=>({
             ...data,
             [name]: checked? 1:0
         }))
     }
     else{
-        setFormData({ ...formData, [name]:value });
+      setNewData({ ...newData, ["ID"]:0, [name]:value });
     }
   }
 
-  const inputValidChecker = () =>{
-    let infoText = "";
-    let cssName = document.getElementById("name");
-    let cssCena = document.getElementById("cena");
-    let cssPrzebieg = document.getElementById("przebieg");
-    let cssSredni_koszt_naprawy = document.getElementById("sredni_koszt_naprawy");
-    let cssProducer = document.getElementById("producer");
 
-
-    
-
-    if(cssName
-       && cssCena
-        && cssPrzebieg
-         && cssSredni_koszt_naprawy
-          && cssProducer){
-      
-      
-      let cssNameVisibility = document.getElementById("nameVisibility");
-      let cssCenaVisibility = document.getElementById("cenaVisibility");
-      let cssPrzebiegVisibility = document.getElementById("przebiegVisibility");
-      let cssSredni_koszt_naprawyVisibility = document.getElementById("sredni_koszt_naprawyVisibility");
-      
-      
-      cssName.style.borderColor = "red";
-      cssCena.style.borderColor = "red";
-      cssPrzebieg.style.borderColor = "red";
-      cssSredni_koszt_naprawy.style.borderColor = "red";
-      cssProducer.style.borderColor = "red";
-
-      if(formData.name.length <= 0 || formData.name.length > 30){
-        infoText += "Car model ";
-        cssName.style.borderColor = "red";
-        cssNameVisibility.style.visibility = "visible";
-      }else{
-        cssNameVisibility.style.visibility = "hidden";
-        cssName.style.borderColor = "green";
-      }
-
-      if(formData.cena < priceMin || formData.cena > priceMax){
-        infoText += "Price ";
-        cssCena.style.borderColor = "red";
-        cssCenaVisibility.style.visibility = "visible";
-      }else{
-        cssCenaVisibility.style.visibility = "hidden";
-        cssCena.style.borderColor = "green";
-      }
-
-      if(formData.przebieg < courseMin || formData.przebieg > courseMax){
-        infoText += "Course ";
-        cssPrzebieg.style.borderColor = "red";
-        cssPrzebiegVisibility.style.visibility = "visible";
-      }else{
-        cssPrzebiegVisibility.style.visibility = "hidden";
-        cssPrzebieg.style.borderColor = "green";
-      }
-
-      if(formData.sredni_koszt_naprawy < repairMin || formData.sredni_koszt_naprawy > repairMax){
-        infoText += "Average repair price ";
-        cssSredni_koszt_naprawy.style.borderColor = "red";
-        cssSredni_koszt_naprawyVisibility.style.visibility = "visible";
-      }else{
-        cssSredni_koszt_naprawyVisibility.style.visibility = "hidden";
-        cssSredni_koszt_naprawy.style.borderColor = "green";
-      }
-
-      if(filterProducer === "null"){
-        infoText += "Producer ";
-        cssProducer.style.borderColor = "red";
-      }else{
-        cssProducer.style.borderColor = "green";
-      }
-
-
-      if(infoText.length>0){
-        setTopTableText("Incorrect values");
-        setTopTableTextColor("red");
-      }else{
-        setTopTableText("Correct values")
-        setTopTableTextColor("green");
-
-    }}
+  const handleSwitchButton = () =>{
+    const question = currentAction === "Filtering data ";
+    setCurrentAction(question ? "Adding data ": "Filtering data ");
+    setIsTablesVisible(!question);
+    document.title = document.title === 'Filtering data' ? 'Adding data': 'Filtering data';
   }
-  
-  useEffect(() => {
-    refreashData();
-    refreashProducers();
-    minMax();
-  }, []);
-  useEffect(() => {
-    inputValidChecker();
-    filterCars();
-  }, [filterProducer]);
-
-  useEffect(() => {
-    filterCars();
-  }, [filterACValue]);
-
-  useEffect(() => {
-    inputValidChecker();
-  }, [formData]);
 
 
-
+  useEffect(()=>{
+    console.log(props.generic_tableValues)
+  },[props.generic_tableValues])
  
   return (
     <>
@@ -363,10 +87,10 @@ const Generic_Tables = () => {
           <div className="col">
           {isTablesVisible ? <Card className="shadow">
               <CardHeader className="border-0">
-                <h3 className="mb-0">{"Cars matching your requirements: " + filteredCars.length}
+                <h3 className="mb-0">{"Data matching your requirements: " + props.generic_tableValues.length}
                   <div style={{float:"right"}}>
                     {currentAction}
-                    <button onClick={handleSwitchButton}>change Action</button>
+                    <Button onClick={handleSwitchButton} color="primary">change Action</Button>
                   </div>
                 </h3>
               </CardHeader>
@@ -374,89 +98,28 @@ const Generic_Tables = () => {
               <Table className="align-items-center table-flush" responsive>
               <thead className="thead-light">
                   <tr>
-                    <th scope="col">Car model: {"  "}
-                      <input type="text" name="name" value={filterText} onChange={(event)=>handleFilteredText(event)} onKeyUp={filterCars}/>
-                    </th>
-                    <th scope="col">Price
-                      <input
-                        type="range"
-                        min={priceMin}
-                        max={priceMax}
-                        value={filterPrice}
-                        onMouseUp={(event) => handleSliderChange(event, 1)}
-                        onChange={(event) => handleSliderChange(event, 1)}/>
-                    </th>
-                    <th scope="col">Course
-                    <input
-                          type="range"
-                          min={courseMin}
-                          max={courseMax}
-                          value={filterCourse}
-                          onMouseUp={(event) => handleSliderChange(event, 2)}
-                          onChange={(event) => handleSliderChange(event, 2)}/>
-                    </th>
-                    <th scope="col">AC
-                      <button style={{margin:"0px", padding:"1px"}} onClick={handleACbutton}>Change</button>
-                    </th>
-                    <th scope="col">Avg repair cost
-                      <input
-                          type="range"
-                          min={repairMin}
-                          max={repairMax}
-                          value={filterRepair}
-                          onMouseUp={(event) => handleSliderChange(event, 3)}
-                          onChange={(event) => handleSliderChange(event, 3)}/>
-                    </th>
 
-                    <th scope="col">Producer
-                    
-                    <select onChange={(e) => setFilterProducerFunction(e.target.value)}>
-                        <option value="null">All Producers</option>
-                        {Array.isArray(producers) &&
-                          producers !== undefined &&
-                          producers.map((element) => (
-                            <option key={element.ID} value={element.producer}>
-                              {element.producer}
-                            </option>
-                          ))}
-                      </select>
-                    </th>
-                    <th scope="col"></th>
+                    {console.log(props.generic_tableValues)}
+                    {console.log(props.generic_table)}
+                    {props.generic_table.map(element=>{
+                      return(<th scope="col">
+                        {element.name}
+                      </th>)
+                    })}
+
+                  
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(filteredCars) && filteredCars.length > 0 ? filteredCars.map(element =>{
+                {Array.isArray(props.generic_tableValues) && props.generic_tableValues.length > 0 ? props.generic_tableValues.map(element =>{
                       return(
                         <tr>
-                          {/* <th scope="row">{element.ID}</th> */}
-                          <th scope="row">{element.name}</th>
-                          <td>{element.cena}</td>
-                          <td>{element.przebieg}</td>
-                          <td>{element.klimatyzacja}</td>
-                          <td>{element.sredni_koszt_naprawy}</td>
-                          <td>{element.producer}</td>
-                          <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          href="#pablo"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(e) => {e.preventDefault()}}
-                          >
-                            Delete
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
+                          {Object.keys(props.generic_tableValues[0]).map(key=>{
+                            console.log(element)
+                            return(<td>{element[key]}</td>)
+                          })}
                         </tr>
-                    )}):<th colSpan={7}>There are no cars that match your requirements</th>}
+                    )}):<th colSpan={7}>There is no data that matches your requirements</th>}
                 </tbody>
               </Table>
               <CardFooter className="py-4">
@@ -517,17 +180,15 @@ const Generic_Tables = () => {
               
               <CardHeader className="border-0">
               
-              <h3 className="mb-0"><span style={{color:topTableTextColor}}>{topTableText}</span>
+              <h3 className="mb-0">
                 <div style={{float:"right"}} className="mb-0">
                   {currentAction}
-                    <button onClick={handleSwitchButton}>change Action</button>
+                    <Button onClick={handleSwitchButton} color="primary">change Action</Button>
                   </div>
                 </h3>
               </CardHeader>
-            <form onSubmit={handleSubmitForm}>
                
                <Table
-                // style={{textAlign:"center"}}
                 className="align-items-center table-flush"
                 responsive
                 
@@ -539,73 +200,31 @@ const Generic_Tables = () => {
                 </thead>
 
                 <tbody>
-                  <tr>
-                    <th><label htmlFor="name">Car model: </label></th>
-                    <th>
-                      <input style={{float:"left"}} type="text" name="name" id="name" value={formData.name} onChange={handleChange}/>
-                      <span id="nameVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>e.g. "Chevrolet Camaro"</span>
-                    </th>
-                  </tr>
 
-                  <tr>
-                    <th><label htmlFor="cena">Price: </label></th>
-                    <th>
-                      <input style={{float:"left"}} type="number" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/>
-                      <span id="cenaVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {priceMin}$ - {priceMax}$</span>
-                    </th>
-                  </tr>
-                  
-                  <tr>
-                    <th><label htmlFor="przebieg">Course: </label></th>
-                    <th>
-                      <input style={{float:"left"}} type="number" name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/>
-                      <span id="przebiegVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {courseMin} km - {courseMax} km</span>
-                    </th>
-
-                  </tr>
-                  
-                  <tr>
-                    <th><label htmlFor="klimatyzacja">Air Conditioning: </label></th>
-                    <th><input style={{float:"left"}} type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
-                    
-                  </tr>
-                  
-                  <tr>
-                    <th><label htmlFor="sredni_koszt_naprawy">Average repair price: </label></th>
-                    <th>
-                      <input style={{float:"left"}} type="number" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/>
-                      <span id="sredni_koszt_naprawyVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {repairMin}$ - {repairMax}$</span>
-                    </th>
-                    
-
-                  </tr>
-                  
-                  <tr>
-                    <th>Producer</th>
-                    <th>
-                      <select id="producer" name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
-                        <option value="null"></option>
-                        {Array.isArray(producers) &&
-                          producers !== undefined &&
-                          producers.map((element) => (
-                            <option key={element.id} value={element.id}>
-                              {element.producer}
-                            </option>
-                          ))}
-                      </select>
-                    </th>
-                  </tr>
-
+                  {props.generic_table.map((element, index)=>{
+                    return(
+                      <tr key={index}>
+                        <th>
+                          <label htmlFor={"label" + element.name}>{element.name}</label>
+                        </th>
+                        <th>
+                          {element.type === "checkbox" && <Input type={element.type}  onChange={handleChange} />}
+                          {element.type === "text" && <Input type={element.type} id={"label" + element.name} name={"label" + element.name} value={newData.name} onChange={handleChange}/>}
+                          {element.type === "number" && element.name !== "ID" && <Input min={0} type={element.type}  id={"label" + element.name} name={"label" + element.name} value={newData.name} onChange={handleChange}/>}
+                          {element.name === "ID" && <span>{index}</span>}
+                        </th>
+                      </tr>
+                    );
+                  })}
                 </tbody>
                 <tfoot>
                   <tr>
                     <th colSpan={3} style={{textAlign:"center"}}>
-                      <button type="submit" disabled={topTableTextColor === "red"}>Wyślij</button>
+                      <Button color="primary" onClick={()=>props.setGeneric_tableValues(Array.from(props.generic_tableValues).concat(newData))}>Wyślij</Button>
                     </th>
                   </tr>
                 </tfoot>
               </Table>
-            </form>
 
 
 

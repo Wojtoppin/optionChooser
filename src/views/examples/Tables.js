@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 // reactstrap components
 import Slider from '@mui/material/Slider';
 import {
+  Button,
   Card,
   CardHeader,
   CardFooter,
@@ -404,7 +405,7 @@ const Tables = () => {
                 <h3 className="mb-0">{"Cars matching your requirements: " + filteredCars.length}
                   <div style={{float:"right"}}>
                     {currentAction}
-                    <button onClick={handleSwitchButton}>change Action</button>
+                    <Button onClick={handleSwitchButton} color="primary">change Action</Button>
                   </div>
                 </h3>
               </CardHeader>
@@ -455,7 +456,7 @@ const Tables = () => {
                       />
                     </th>
                     <th scope="col">
-                      <button style={{margin:"0px", padding:"1px"}} onClick={handleACbutton}>Change</button>
+                      <Button onClick={handleACbutton} color="primary">Change</Button>
                     </th>
                     <th scope="col">
                       <Slider
@@ -587,7 +588,7 @@ const Tables = () => {
               <h3 className="mb-0"><span style={{color:topTableTextColor}}>{topTableText}</span>
                 <div style={{float:"right"}} className="mb-0">
                   {currentAction}
-                    <button onClick={handleSwitchButton}>change Action</button>
+                    <Button onClick={handleSwitchButton} color="primary">change Action</Button>
                   </div>
                 </h3>
               </CardHeader>
@@ -667,7 +668,7 @@ const Tables = () => {
                 <tfoot>
                   <tr>
                     <th colSpan={3} style={{textAlign:"center"}}>
-                      <button type="submit" disabled={topTableTextColor === "red"}>Wyślij</button>
+                      <Button type="submit" disabled={topTableTextColor === "red"} color="primary">Wyślij</Button>
                     </th>
                   </tr>
                 </tfoot>

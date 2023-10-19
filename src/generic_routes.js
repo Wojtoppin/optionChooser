@@ -16,11 +16,6 @@
 
 */
 import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
-import Maps from "views/examples/Maps.js";
-import Register from "views/examples/Register.js";
-import Login from "views/examples/Login.js";
-import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Generic_Tables from "views/examples/Generic_Tables";
 import Create_Generic_Tables from "views/examples/Create_Generic_Tables";
@@ -30,23 +25,9 @@ var generic_routes = [
     path: "/generic/index",
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
-    component: <Index />,
+    component: <Index/>,
     layout: "/admin",
   },
-  // {
-  //   path: "/maps",
-  //   name: "Maps",
-  //   icon: "ni ni-pin-3 text-orange",
-  //   component: <Maps />,
-  //   layout: "/admin",
-  // },
-  // {
-  //   path: "/user-profile",
-  //   name: "User Profile",
-  //   icon: "ni ni-single-02 text-yellow",
-  //   component: <Profile />,
-  //   layout: "/admin",
-  // },
   {
     path: "/generic/tables",
     name: "Filter/Add generic data",
@@ -54,20 +35,6 @@ var generic_routes = [
     component: <Generic_Tables />,
     layout: "/admin",
   },
-  // {
-  //   path: "/login",
-  //   name: "Login",
-  //   icon: "ni ni-key-25 text-info",
-  //   component: <Login />,
-  //   layout: "/auth",
-  // },
-  // {
-  //   path: "/register",
-  //   name: "Register",
-  //   icon: "ni ni-circle-08 text-pink",
-  //   component: <Register />,
-  //   layout: "/auth",
-  // },
   {
     path: "/generic/new_tables",
     name: "Create Generic Table",

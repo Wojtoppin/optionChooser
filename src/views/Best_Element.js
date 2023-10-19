@@ -53,6 +53,8 @@ class Best_Element{
         let elementData = oldElementData;
         let forData = {};
         let confirms = {}
+        let new_data_test = []
+
         for (let key in sorted[0]) {
             if (sorted[0].hasOwnProperty(key) && key !== "ID") {
                 forData[key] = sorted[0][key] == 1 ? true : false;
@@ -87,16 +89,31 @@ class Best_Element{
                 }
             })
 
-            winning_data.push({"name": element.name, "sum": sum,
-             "cena":element_data["cena"] - element_data["cena"] * weight["cena"],
-              "przebieg": element_data["przebieg"] - element_data["przebieg"] * weight["przebieg"],
-               "klimatyzacja":element_data["klimatyzacja"] - element_data["klimatyzacja"] * weight["klimatyzacja"],
-                "sredni_koszt_naprawy":element_data["sredni_koszt_naprawy"] - element_data["sredni_koszt_naprawy"] * weight["sredni_koszt_naprawy"],
-                 "producer": element.producer});
+            
+            
+            let newData = {}
+            keys.slice(2, -1).map(key => (
+                
+                newData[key] = element_data[key] - element_data[key] * weight[key]
+                )
+
+            )
+            newData["name"] = element.name;
+            newData["sum"] = sum;
+            
+
+            winning_data.push(newData)
+
             
             
             // ustalenie kto jest wygranyms
         });
+        console.log(winning_data);
+        console.log(new_data_test);
+
+
+
+
         let countWeight = 0;
         let max_sum = 0;
         for (let element in weight) {

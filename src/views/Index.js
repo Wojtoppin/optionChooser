@@ -234,6 +234,7 @@ const Index = (props) => {
       }
     }
     producent_result.sort((a, b) => b.sum - a.sum)
+    console.log(producent_result)
     setBestProducer(producent_result[0].name)
     let chartProducer = producent_result.slice(0,6);
     console.log(chartProducer)
@@ -478,9 +479,6 @@ const Index = (props) => {
       repairRange = {repairRange}
       
       handleNewSliderChange = {handleNewSliderChange}
-      spsV = {setPrzebiegSliderValue}
-      sklsV = {setKlimatyzacjaSliderValue}
-      skosV = {setKosztSliderValue}
 
       index={true}
       />
