@@ -18,7 +18,6 @@ class Best_Element{
               excludes.push(keyElement)
             }
         }
-        console.log(excludes);
 
 
 
@@ -54,7 +53,12 @@ class Best_Element{
             low[key] = 0;
             high[key] = 0;
         });
-
+        if (new_weights[0] === NaN){
+            new_weights=[]
+            keys.filter(key=>!excludes.includes(key)).forEach(key =>{
+                new_weights[key] = 100;
+            });
+        }
         for (let key in new_weights) {
             weightSum += new_weights[key];
         }
@@ -124,7 +128,6 @@ class Best_Element{
             if(element.producent !== undefined){
                 newData["producent"] = element.producent;
             }
-
             winning_data.push(newData)
 
             
@@ -147,7 +150,6 @@ class Best_Element{
             element["sum"] = element["sum"]/countWeight;
         });
         winning_data.sort((a,b)=> b["sum"] - a["sum"])
-        
         return winning_data;
     }
 }

@@ -69,11 +69,6 @@ const Header = (props) => {
                   </CardBody>
                 </Card>
               </Col>
-              
-              
-              
-              
-              
               <Col lg="6" xl="4">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
@@ -164,121 +159,40 @@ const Header = (props) => {
             </Row>}
 
 
-            {props.tables && <Row>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >Price
-                        </CardTitle>
-                        <input
-                          type="range"
-                          min={props.priceMin}
-                          max={props.priceMax}
-                          value={props.filterPrice}
-                          onMouseUp={(event) => props.handleSliderChange(event, 1)}
-                          onChange={(event) => props.handleSliderChange(event, 1)}/>
-                      </div>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      {"Less than: "}
-                      <span className="text-danger mr-2">
-                         {props.filterPrice}$
-                      </span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          course
-                        </CardTitle>
-                        
-                        <input
-                          type="range"
-                          min={props.courseMin}
-                          max={props.courseMax}
-                          value={props.filterCourse}
-                          onMouseUp={(event) => props.handleSliderChange(event, 2)}
-                          onChange={(event) => props.handleSliderChange(event, 2)}/>
 
-                      </div>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      {"Less than: "}
-                      <span className="text-danger mr-2">
-                         {props.filterCourse} km
-                      </span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          AC
-                        </CardTitle>
-                        <h6><button style={{margin:"0px", padding:"1px"}} onClick={props.handleACbutton}>Change</button></h6>
-                        
-                      </div>
-                    </Row>
-                    <h6 className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-danger mr-2">
-                      {props.filterACValue}
-                      </span>
-                    </h6>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          Repair Cost
-                        </CardTitle>
-                        
-                        <input
-                          type="range"
-                          min={props.repairMin}
-                          max={props.repairMax}
-                          value={props.filterRepair}
-                          onMouseUp={(event) => props.handleSliderChange(event, 3)}
-                          onChange={(event) => props.handleSliderChange(event, 3)}/>
+            {props.generic_index && <Row>
+                  <Col lg="6" xl="12">
+                    <Card className="card-stats mb-4 mb-xl-0">
+                      <CardBody>
+                        <table border={0} style={{textAlign:"center", width:"100%"}}>
+                          <tr>
+                            <th style={{width:"33%"}} onClick={()=>props.handleChangeCurrentAction(1)}>
+                              <div className="icon icon-shape text-white rounded-circle shadow" style={{background:props.isSelectPropertiesVisible || props.isChartVisible || props.isSelectObjectsVisible ?"#12980f":"#f5365c"}}>
+                                <span>1</span>
+                              </div>
+                              {"  Select properties"}
+                            </th>
+                            <th style={{width:"33%"}} onClick={()=>props.handleChangeCurrentAction(2)}>
+                              <div className="icon icon-shape text-white rounded-circle shadow" style={{background:props.isSelectObjectsVisible || props.isChartVisible?"#12980f":"#f5365c"}}>
+                                <span>2</span>
+                              </div>
+                              {"  Select objects"}
+                            </th>
+                            <th style={{width:"33%"}} onClick={()=>props.handleChangeCurrentAction(3)}>
+                              <div className="icon icon-shape text-white rounded-circle shadow" style={{background:props.isChartVisible?"#12980f":"#f5365c"}} >
+                                <span>3</span>
+                              </div>
+                              {"  Chart"}
+                            </th>
+                          </tr>
+                        </table>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                
 
-                      </div>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      {"Less than "}
-                      <span className="text-danger mr-2">
-                         {props.filterRepair}$
-                      </span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
             </Row>}
+
           </div>
         </Container>
       </div>

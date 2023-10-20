@@ -15,17 +15,17 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Index from "views/Index.js";
 import Icons from "views/examples/Icons.js";
 import Generic_Tables from "views/examples/Generic_Tables";
 import Create_Generic_Tables from "views/examples/Create_Generic_Tables";
+import Generic_Index from "views/Generic_Index";
 
 var generic_routes = [
   {
     path: "/generic/index",
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
-    component: <Index/>,
+    component: <Generic_Index/>,
     layout: "/admin",
   },
   {

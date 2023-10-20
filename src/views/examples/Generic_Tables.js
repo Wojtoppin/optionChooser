@@ -52,16 +52,8 @@ const Generic_Tables = (props) => {
 
 
   const handleChange = (event) =>{
-    let {name, value, type, checked} = event.target;
-    if (type === "checkbox"){
-        setNewData((data)=>({
-            ...data,
-            [name]: checked? 1:0
-        }))
-    }
-    else{
+    let {name, value} = event.target;
       setNewData({ ...newData, ["ID"]:0, [name]:value });
-    }
   }
 
 
@@ -72,17 +64,11 @@ const Generic_Tables = (props) => {
     document.title = document.title === 'Filtering data' ? 'Adding data': 'Filtering data';
   }
 
-
-  useEffect(()=>{
-    console.log(props.generic_tableValues)
-  },[props.generic_tableValues])
  
   return (
     <>
     <Header/>
-      {/* Page content */}
       <Container className="mt--7" fluid>
-        {/* Table */}
         <Row>
           <div className="col">
           {isTablesVisible ? <Card className="shadow">

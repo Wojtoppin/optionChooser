@@ -101,7 +101,7 @@ const Index = (props) => {
     UpdateCharts(index)
   };
 
-  function UpdateCharts(index, carsData={}) {
+  function UpdateCharts(index) {
 
       const test = new Best_Element();
       let results = []
@@ -152,11 +152,11 @@ const Index = (props) => {
               data: km,
               borderColor: 'rgba(255, 119, 0, 0.65)',
             },
-            {
-              label: "Air Conditioning",
-              data: AC,
-              borderColor: 'rgba(248, 255, 0, 0.65)',
-            },
+            // {
+            //   label: "Air Conditioning",
+            //   data: AC,
+            //   borderColor: 'rgba(248, 255, 0, 0.65)',
+            // },
             {
               label: "Repair Price",
               data: repair,

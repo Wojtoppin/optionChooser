@@ -14,6 +14,9 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+
+
+
 // -------database-------
 app.get('/data', (req, res) => {
   const sql = `SELECT samochody.ID, name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, Producer.producer
@@ -101,6 +104,53 @@ app.get('/weight', (req, res) => {
     res.json(results);
   });
 });
+
+
+//---------generic_data------
+app.get('/generic_data', (req, res) => {
+  const sql = 'SELECT * FROM generic_data';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;  
+    }
+    res.json(results);
+  });
+});
+
+
+app.post('/generic_data', (req, res) => {
+  const { ID, CLOB } = req.body;
+
+  if (!ID || !CLOB) {
+    return res.status(400).json({ error: 'Invalid data format' });
+  }
+  
+  const sql = 'INSERT INTO generic_data (ID, CLOB) VALUES (?, ?)';
+  
+  db.query(sql, [ID, CLOB], (err, results) => {
+    if (err) {
+      console.error('Error inserting data:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;  
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ message: 'Data inserted successfully' });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
 
 // -------/database-------
 
