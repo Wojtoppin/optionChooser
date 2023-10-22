@@ -21,33 +21,33 @@ import Create_Generic_Tables from "views/examples/Create_Generic_Tables";
 import Generic_Index from "views/Generic_Index";
 
 var generic_routes = [
-  {
-    path: "/generic/index",
-    name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
-    component: <Generic_Index/>,
-    layout: "/admin",
-  },
-  {
-    path: "/generic/tables",
-    name: "Filter/Add generic data",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: <Generic_Tables />,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/generic/index",
+  //   name: "Dashboard",
+  //   icon: "ni ni-tv-2 text-primary",
+  //   component: <Generic_Index/>,
+  //   layout: "/admin",
+  // },
+  // {
+  //   path: "/generic/tables",
+  //   name: "Filter/Add generic data",
+  //   icon: "ni ni-bullet-list-67 text-red",
+  //   component: <Generic_Tables />,
+  //   layout: "/admin",
+  // },
   {
     path: "/generic/new_tables",
-    name: "Create Generic Table",
-    icon: "ni ni-archive-2",
+    name: "Create Your Own Chart",
+    icon: "ni ni-chart-bar-32",
     component: <Create_Generic_Tables />,
     layout: "/admin",
   },
-  {
-    path: "/generic/icons",
-    name: "Icons",
-    icon: "ni ni-planet text-blue",
-    component: <Icons />,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/generic/icons",
+  //   name: "Icons",
+  //   icon: "ni ni-planet text-blue",
+  //   component: <Icons />,
+  //   layout: "/admin",
+  // },
 ];
 export default generic_routes;

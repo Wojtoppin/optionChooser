@@ -184,7 +184,7 @@ const Create_Generic_Tables = (props) => {
 
   // index
 
-  const [activeNav, setActiveNav] = useState(1);
+  const [activeNav, setActiveNav] = useState(0);
   const [lineData, setLineData] = useState({});
 
 
