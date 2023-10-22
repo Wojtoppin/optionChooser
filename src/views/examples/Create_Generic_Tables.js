@@ -173,7 +173,6 @@ const Create_Generic_Tables = (props) => {
 
 
   const handleDeleteObjectButton = (indexToRemove) =>{
-    console.log(indexToRemove)
     setNewData((prevData) => {
       const newDataCopy = [...prevData];
       const newArray = newDataCopy.filter((something,index) => index !== indexToRemove);
@@ -187,8 +186,11 @@ const Create_Generic_Tables = (props) => {
 
   const [activeNav, setActiveNav] = useState(1);
   const [lineData, setLineData] = useState({});
-  const [weightValues, setWeightValues] = useState([]);
+
+
+  const [weightValues, setWeightValues] = useState({});
   const [sorted, setSorted] = useState({});
+  const [bestOption, setBestOption] = useState({});
 
   
 
@@ -207,140 +209,74 @@ const Create_Generic_Tables = (props) => {
 
   function UpdateCharts(index) {
 
-      const test = new Best_Element();
+      const best_element = new Best_Element();
       let results = []
-      if(props.generic_tableValues.length > 0){
-        results = test.onLoad(props.generic_tableValues, weightValues, sorted).winning_data;
+      if(props.generic_tableValues.length > 0 && Array.isArray(sorted) && sorted.length !== 0){
+        results = best_element.onLoad(props.generic_tableValues, weightValues, sorted).winning_data;
+        setBestOption(results[0]["name"])
         console.log(results)
+        let new_results = []
+        results.map(element=>(
+          console.log(element)
+        ))
+        let names = [];
+        let sum = [];
+        results.map(element =>{
+          names.push(element.name);
+          sum.push(element.sum);
+        })
 
+        let chart1Data = {};
 
-
-
-
-      // let repair = [];
-      // results.map(element =>{
-      //   names.push(element.name);
-      //   sum.push(element.sum);
-      //   prices.push(element.cena);
-      //   km.push(element.przebieg);
-      //   AC.push(element.klimatyzacja);
-      //   repair.push(element.sredni_koszt_naprawy);
-      // })
-      // let chart1Data = {};
-      // let chart2Data = {};
-      // let new_label="";
-      // let new_data = [];
-      // let new_bC = "";
-      // let selected_array = [];
-
-      // if (index === 1){
-      //   chart1Data = {
-      //     labels: names,
-      //     datasets: [
-      //       {
-      //         label: "Sum",
-      //         data: sum,
-      //         borderColor: 'rgba(255, 0, 0, 0.65)',
+        if (index === 0){
+          chart1Data = {
+            labels: names,
+            datasets: [
+              {
+                label: "Sum",
+                data: sum,
+                borderColor: 'rgba(255, 0, 0, 0.65)',
+                
+              }
               
-      //       },
-      //       {
-      //         label: "Price",
-      //         data: prices,
-      //         borderColor: 'rgba(255, 0, 141, 0.65)',
-      //       },
-      //       {
-      //         label: "Course",
-      //         data: km,
-      //         borderColor: 'rgba(255, 119, 0, 0.65)',
-      //       },
-      //       {
-      //         label: "Air Conditioning",
-      //         data: AC,
-      //         borderColor: 'rgba(248, 255, 0, 0.65)',
-      //       },
-      //       {
-      //         label: "Repair Price",
-      //         data: repair,
-      //         borderColor: 'rgba(17, 205, 239, 0.65)',
-      //       },
-      //     ],
-      //   };
-      //   selected_array = sum;
-        
-      // }
-      // if (index === 2){
-      //   new_label = "Price"
-      //   new_data = prices;
-      //   new_bC = "rgba(255, 0, 141, 0.65)"
-      //   selected_array = prices;
-
-      // }
-      // if (index === 3){
-      //   new_label = "Course"
-      //   new_data = km;
-      //   new_bC = "rgba(255, 119, 0, 0.65)"
-      //   selected_array = km;
-
-      // }
-      // if (index === 4){
-      //   new_label = "Air Conditioning"
-      //   new_data = AC;
-      //   new_bC = 'rgba(248, 255, 0, 0.65)'
-      //   selected_array = AC;
-
-      // }
-      // if (index === 5){
-      //   new_label = "Repair Price"
-      //   new_data = repair;
-      //   new_bC = 'rgba(17, 205, 239, 0.65)'
-      //   selected_array = repair;
-
-      // }
-      // if(Object.keys(chart1Data).length === 0){
-      //   chart1Data = {
-      //     labels: names,
-      //     datasets: [
-      //       {
-      //         label: new_label,
-      //         data: new_data,
-      //         borderColor: new_bC,
-  //           },
-  //         ],
-  //       };
-  //   }
-  //   chartExample1.data1 = (canvas) => chart1Data;
-  //   setLineData(chart1Data);
+            ],
+          };
+        }
+  
     
-  // }else{
-  //   setBestCar("no data matches your preferences")
-  // }
+        // chartExample1.data1 = (canvas) => chart1Data;
+        setLineData(chart1Data);
+      
+      }else{
+        setBestOption("no data matches your preferences")
+      }
 
 
-  }}
-  var cokolwiek = [{"coś":1}];
+
+
+  }
+
+
+
+
+
+  var weights = [];
   var confirms = [];
   const minMax = () => {
     
+    props.generic_table.filter((data) => (data.sorting === "ASC" || data.sorting === "DESC") && data.type === "number").map(key => {
+      weights[key.name] = 1
+    });
+    
+    setWeightValues(weights);
     props.generic_table.filter((data) => data.sorting === "ASC").map(key => {
       confirms.push({ [key.name]: 1 });
     });
     props.generic_table.filter((data) => data.sorting === "DESC").map(key => {
       confirms.push({ [key.name]: 0 });
     });
-  
-    props.generic_table.filter((data) => (data.sorting === "ASC" || data.sorting === "DESC") && data.type === "number").map(key => {
-      console.log({ [key.name]: 100 });
-      cokolwiek.push({ [key.name]: 100 })
-      confirms.push({ [key.name]: 100 })
-    });
-    console.log(confirms);
-    console.log(cokolwiek);
-
-
     setSorted(confirms);
-    setWeightValues(cokolwiek);
-  
-  };
+    };
   
 
 
@@ -348,7 +284,6 @@ const Create_Generic_Tables = (props) => {
 
     useEffect(()=>{
       UpdateCharts(1);
-
     },[sorted])
 
 
@@ -597,7 +532,7 @@ const Create_Generic_Tables = (props) => {
                         {" Chart "}
                       </th>
                       <th style={{width:"20px"}}></th>
-                      {/* {isChartVisible && <td>{bestCar === "no data matches your preferences"? bestCar :"Best option: " + bestCar}</td>} */}
+                      {isChartVisible && <td>{bestOption === "no data matches your preferences"? bestOption :"Best option: " + bestOption}</td>}
                     </tr>
                   </table>
                     <h6 className="text-uppercase text-light ls-1 mb-1">
@@ -638,12 +573,10 @@ const Create_Generic_Tables = (props) => {
                   </div>}
                 </Row>
               </CardHeader>
-              {isChartVisible && <CardBody>
+              {isChartVisible && bestOption.length!== 0 && <CardBody>
                 <div>
                   <Line
                     data={lineData}
-                    // options={chartExample1.options}
-                    // getDatasetAtEvent={(e) => console.log(cars)}
                   />
                 </div>
               </CardBody>}
@@ -651,31 +584,6 @@ const Create_Generic_Tables = (props) => {
           </Col>
         </Row>
       </Container>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </>
   );
 };

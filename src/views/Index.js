@@ -68,7 +68,7 @@ const Index = (props) => {
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"})
   const [bestCar, setBestCar] = useState("")
   const [bestProducer, setBestProducer] = useState("")
-  const [sorted, setSorted] = useState({})
+  const [sorted, setSorted] = useState([{cena: 50}, {przebieg: 50}, {klimatyzacja: 50}, {sredni_koszt_naprawy: 50}])
 
 
   const [priceMin, setPriceMin] = useState(0);
@@ -152,11 +152,11 @@ const Index = (props) => {
               data: km,
               borderColor: 'rgba(255, 119, 0, 0.65)',
             },
-            // {
-            //   label: "Air Conditioning",
-            //   data: AC,
-            //   borderColor: 'rgba(248, 255, 0, 0.65)',
-            // },
+            {
+              label: "Air Conditioning",
+              data: AC,
+              borderColor: 'rgba(248, 255, 0, 0.65)',
+            },
             {
               label: "Repair Price",
               data: repair,
@@ -234,10 +234,8 @@ const Index = (props) => {
       }
     }
     producent_result.sort((a, b) => b.sum - a.sum)
-    console.log(producent_result)
     setBestProducer(producent_result[0].name)
     let chartProducer = producent_result.slice(0,6);
-    console.log(chartProducer)
 
     chart2Data = {
       labels: chartProducer.map(element=>element.name),
@@ -394,16 +392,27 @@ const Index = (props) => {
     
   }};
 
-  const fetchWeights = () =>{
-    fetch(`http://localhost:3040/weight`)
-    .then((response) => response.json())
-      .then((data) => {
-        setSorted(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }
+  // const fetchWeights = () =>{
+  //   fetch(`http://localhost:3040/weight`)
+  //   .then((response) => response.json())
+  //     .then((data) => {
+
+  //       let new_sort = []
+  //       let new_data = data
+  //       console.log(new_data)
+  //       new_data.map(element => {
+
+  //         console.log(element)
+  //       })
+  //       // new_sort.push(element)
+
+  //       console.log(new_sort)
+  //       setSorted(new_sort);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching data:', error);
+  //     });
+  // }
 
   const handleNewSliderChange = (event, newValue, activeThumb, type) => {
     if (!Array.isArray(newValue)) {
@@ -454,7 +463,6 @@ const Index = (props) => {
     document.title = 'REACT RISK CALCULATOR';
     refreashData();
     refreashProducers();
-    fetchWeights();
     minMax();
   }, []);
 

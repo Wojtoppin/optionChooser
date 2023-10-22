@@ -5,12 +5,19 @@ class Best_Element{
         let confirms = {};
         let forData = {};
         let excludes = [];
-
-        for (let key in sorted[0]) {
-            if (sorted[0].hasOwnProperty(key) && key !== "ID") {
-                forData[key] = sorted[0][key] == 1 ? true : false;
+        const keys = Object.keys(elementData[0]);
+        keys.map(key=>{
+            sorted.map(element=>{
+                if(element[key] !== undefined){
+                    forData[Object.keys(element)[0]] = element[key] === 1? true:false;
+                    // forData[Object.keys(element)[0]] = element[key] === 1? true:false;
+                }
             }
-        }
+            )
+
+        })
+
+
         confirms = forData;
 
         for (const keyElement of Object.keys(elementData[0])) {
@@ -21,9 +28,7 @@ class Best_Element{
 
 
 
-
         //nazwy wszystkich kluczy tablic które potem są użyte aby kod działał automatycznie
-        const keys = Object.keys(elementData[0]);
         const {low, high, new_weights} = this.calculateWeight(keys, weights, excludes);
         
 
@@ -37,7 +42,6 @@ class Best_Element{
         });
         const winning_data = this.result(high, keys, new_weights, confirms, elementData, excludes);
         return({winning_data})
-
     }
 
 
@@ -52,21 +56,20 @@ class Best_Element{
         keys.filter(key=>!excludes.includes(key)).forEach(key =>{
             low[key] = 0;
             high[key] = 0;
+
         });
-        if (new_weights[0] === NaN){
-            new_weights=[]
-            keys.filter(key=>!excludes.includes(key)).forEach(key =>{
-                new_weights[key] = 100;
-            });
-        }
-        for (let key in new_weights) {
-            weightSum += new_weights[key];
-        }
+        
+        keys.filter(key=>!excludes.includes(key)).forEach(key =>{
+            weightSum += weights[key];
+        });
 
         // dzięki poniższemu skrawkowi kodu, wagi również są zapisywane w formie rozmytej
-        for (let key in new_weights) {
-            new_weights[key] = new_weights[key] / weightSum;
-        }
+        keys.filter(key=>!excludes.includes(key)).forEach(key =>{
+            new_weights[key] = weights[key] / weightSum;
+
+
+        });
+
 
         return {low, high, new_weights};
     }
@@ -139,7 +142,6 @@ class Best_Element{
 
 
         let countWeight = 0;
-        let max_sum = 0;
         for (let element in weight) {
             if(element != 0){
                 countWeight++;
