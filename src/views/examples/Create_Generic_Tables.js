@@ -341,28 +341,36 @@ const Create_Generic_Tables = (props) => {
       const sheetName = workbook.SheetNames[0];
       const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
   
+      const updatedData = jsonData.map((item) => {
+        return { name: item[Object.keys(item)[0]], ...item };
+      });
+
+
       console.log("");
-      console.log(Object.keys(jsonData[0]).slice(1));
-      props.setGeneric_table({name:"name", type:"text", sorting:"don't show as a chart variable"})
-      setRows({name:"name", type:"text", sorting:"don't show as a chart variable"})
-  
+      console.log(updatedData);
+
       let newRow = []
-      Object.keys(jsonData[0]).slice(1).map((key,index)=>{
-        
-        newRow.push({ name: key[0]!=="_"&&key[1]!=="_"?key:"_" + index, type: "number", sorting: "ASC" })
+      Object.keys(updatedData[0]).map((key,index)=>{
+        if(index===0){
+          console.log(key)
+          newRow.push({name:"name", type:"text", sorting:"don't show as a chart variable"})
+        }else{
+          if(index!==1){
+            newRow.push({ name: key, type: "number", sorting: "DESC" })
+            // key[0]!=="_"&&key[1]!=="_"?key:"_" + index
+          }
+        }
       })
+      
+      
       props.setGeneric_table(newRow);
       setRows(newRow);
-
-
-
-
-
-
-
-
-
+      props.setGeneric_tableValues(updatedData)
+      setNewData(updatedData)
       
+
+
+
     };
     reader.readAsArrayBuffer(file);
   
@@ -409,9 +417,9 @@ const Create_Generic_Tables = (props) => {
               <th style={{width:"20px"}}>
                 
               </th>
-              <th>
+              {isSelectPropertiesVisible &&<th>
                 <Input type="file" onChange={(event)=>exclToJson(event)} />
-              </th>
+              </th>}
             </tr>
           </table>
 
@@ -526,7 +534,7 @@ const Create_Generic_Tables = (props) => {
 
                 <tbody>
                 
-                {Array.isArray(newData) && newData.map((elementData, elementIndex) => {
+                {Array.isArray(newData) && props.generic_tableValues.map((elementData, elementIndex) => {
                   return (
                         <tr key={"tr" + elementIndex}>
                             {props.generic_table.map((element,newIndex) => (
@@ -534,14 +542,13 @@ const Create_Generic_Tables = (props) => {
                                   
 
                                     {element.type === "checkbox" && <Input type="checkbox" onChange={(event) =>handleNewChange(event,elementIndex)} />}
-                                    {element.type === "text" && <Input type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />}
-                                    {element.type === "number" && element.name !== "ID" && <Input min={0} type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />}
+                                    {element.type === "text" && <Input style={{minWidth:"100px"}} type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />}
+                                    {element.type === "number" && element.name !== "ID" && <Input style={{minWidth:"65px"}} min={0} type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />}
                                     
                                 </td>
                             ))}
                             <td>
                               <Button style={{background:"#a71c1c", color:"white", border:"hidden"}} onClick={() => handleDeleteObjectButton(elementIndex)}>-</Button>
-
                             </td>
                         </tr>
                     );
@@ -550,59 +557,69 @@ const Create_Generic_Tables = (props) => {
 
                     {/* :<th colSpan={7}>There is no data that matches your requirements</th> */}
                 </tbody>
+                <tfoot>
+
+                  <th colSpan={props.generic_table.length-1}>
+                    <Button color="primary" onClick={()=>handleChangeCurrentAction(3)}>Send</Button>
+                  </th>
+                  <th>
+                    <CardFooter className="py-4">
+                      <nav aria-label="...">
+                        <Pagination
+                          className="pagination justify-content-end mb-0"
+                          listClassName="justify-content-end mb-0"
+                        >
+                          <PaginationItem className="disabled">
+                            <PaginationLink
+                              href="#pablo"
+                              onClick={(e) => e.preventDefault()}
+                              tabIndex="-1"
+                            >
+                              <i className="fas fa-angle-left" />
+                              <span className="sr-only">Previous</span>
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem className="active">
+                            <PaginationLink
+                              href="#pablo"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              1
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#pablo"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              2 <span className="sr-only">(current)</span>
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#pablo"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              3
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#pablo"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              <i className="fas fa-angle-right" />
+                              <span className="sr-only">Next</span>
+                            </PaginationLink>
+                          </PaginationItem>
+                        </Pagination>
+                      </nav>
+                    </CardFooter>
+                  </th>
+
+
+                </tfoot>
               </Table>
-              <CardFooter className="py-4">
-                <nav aria-label="...">
-                  <Pagination
-                    className="pagination justify-content-end mb-0"
-                    listClassName="justify-content-end mb-0"
-                  >
-                    <PaginationItem className="disabled">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                        tabIndex="-1"
-                      >
-                        <i className="fas fa-angle-left" />
-                        <span className="sr-only">Previous</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem className="active">
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className="fas fa-angle-right" />
-                        <span className="sr-only">Next</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                  </Pagination>
-                </nav>
-              </CardFooter>
               </div>}
               
               </Card>
