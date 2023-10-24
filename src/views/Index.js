@@ -52,6 +52,7 @@ import {
 } from "variables/charts.js";
 
 import Header from "components/Headers/Header.js";
+import { colors } from "@mui/material";
 
 const Index = (props) => {
   const [cenaSliderValue, setCenaSliderValue] = useState(50);
@@ -70,6 +71,8 @@ const Index = (props) => {
   const [bestProducer, setBestProducer] = useState("")
   const [sorted, setSorted] = useState([{cena: 50}, {przebieg: 50}, {klimatyzacja: 50}, {sredni_koszt_naprawy: 50}])
 
+  const [opened, setOpened] = useState([false,false,false,false])
+
 
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(0);
@@ -80,7 +83,7 @@ const Index = (props) => {
   const [priceRange, setPriceRange] = useState([priceMin, priceMax]);
   const [courseRange, setCourseRange] = useState([courseMin, courseMax]);
   const [repairRange, setRepairRange] = useState([priceMin, priceMax]);
-  const [filteredCars, setFilteredCars] = useState({});
+  const [filteredCars, setFilteredCars] = useState(cars);
 
 
   const minDistance = 10;
@@ -95,22 +98,57 @@ const Index = (props) => {
     parseOptions(Chart, chartOptions());
   }
 
-  const toggleNavs = (e, index) => {
-    e.preventDefault();
+  const toggleNavs = (e, index, openedIndex="") => {
+    if(e!==""){
+      e.preventDefault();
+    }
+    const newOpened = [...opened];
+    if(openedIndex!== ""){
+      newOpened[openedIndex] = !newOpened[openedIndex];
+      setOpened(newOpened);
+    }
+    if (index === 1){
+      setOpened([false,false,false,false])
+    }
     setActiveNav(index);
-    UpdateCharts(index)
   };
 
-  function UpdateCharts(index) {
+  useEffect(()=>{
+    UpdateCharts(activeNav)
+  },[opened])
 
+  function UpdateCharts(index) {
+      let new_filtered_cars = filteredCars;
+      
+      if(Array.isArray(filteredCars) && filteredCars.length !==0){
+        new_filtered_cars = new_filtered_cars.map((car) => {
+          const modifiedCar = JSON.parse(JSON.stringify(car));
+          if(!opened[0]){
+            delete modifiedCar["cena"]
+          }
+          if(!opened[1]){
+            delete modifiedCar["przebieg"]
+          }
+          if(!opened[2]){
+            delete modifiedCar["klimatyzacja"]
+          }
+          if(!opened[3]){
+            delete modifiedCar["sredni_koszt_naprawy"]
+          }
+          return modifiedCar;
+        });
+      }
+      
       const test = new Best_Element();
       let results = []
       if(filteredCars.length > 0){
-        results = test.onLoad(filteredCars, weight, sorted).winning_data;
+        if(index===1){
+          results = test.onLoad(filteredCars, weight, sorted).winning_data;
+        }else{
+          results = test.onLoad(new_filtered_cars, weight, sorted).winning_data;
+        }
         setBestCar(results[0].name)
-
-      
-      
+  
       let names = [];
       let sum = [];
       let prices = [];
@@ -127,12 +165,7 @@ const Index = (props) => {
       })
       let chart1Data = {};
       let chart2Data = {};
-      let new_label="";
-      let new_data = [];
-      let new_bC = "";
-      let selected_array = [];
 
-      if (index === 1){
         chart1Data = {
           labels: names,
           datasets: [
@@ -164,50 +197,6 @@ const Index = (props) => {
             },
           ],
         };
-        selected_array = sum;
-        
-      }
-      if (index === 2){
-        new_label = "Price"
-        new_data = prices;
-        new_bC = "rgba(255, 0, 141, 0.65)"
-        selected_array = prices;
-
-      }
-      if (index === 3){
-        new_label = "Course"
-        new_data = km;
-        new_bC = "rgba(255, 119, 0, 0.65)"
-        selected_array = km;
-
-      }
-      if (index === 4){
-        new_label = "Air Conditioning"
-        new_data = AC;
-        new_bC = 'rgba(248, 255, 0, 0.65)'
-        selected_array = AC;
-
-      }
-      if (index === 5){
-        new_label = "Repair Price"
-        new_data = repair;
-        new_bC = 'rgba(17, 205, 239, 0.65)'
-        selected_array = repair;
-
-      }
-      if(Object.keys(chart1Data).length === 0){
-        chart1Data = {
-          labels: names,
-          datasets: [
-            {
-              label: new_label,
-              data: new_data,
-              borderColor: new_bC,
-            },
-          ],
-        };
-    }
-
 
     let producent= [];
     let producentSum = [];
@@ -256,8 +245,6 @@ const Index = (props) => {
   }else{
     setBestCar("no car matches your preferences")
   }
-
-
 }
 
     const minMax = () =>{
@@ -346,74 +333,6 @@ const Index = (props) => {
     });
   }
 
-  const handleSliderChange = (event, num) => {
-    const newValue = parseInt(event.target.value);
-    let new_value = 0;
-    let new_cena = 0;
-    let new_przebieg = 0;
-    let new_klimatyzacja = 0;
-    let new_koszt = 0;
-    if(newValue !== 0){
-      new_value = 101 - newValue;
-    }
-    if (cenaSliderValue !== 0){
-      new_cena = 101-cenaSliderValue;
-    }
-    if (przebiegSliderValue !== 0){
-      new_przebieg = 101-przebiegSliderValue;
-    }
-    if (klimatyzacjaSliderValue !== 0){
-      new_klimatyzacja = 101-klimatyzacjaSliderValue;
-    }
-    if (kosztSliderValue !== 0){
-      new_koszt = 101-kosztSliderValue;
-    }
-
-
-
-    if(num === 1){
-        setCenaSliderValue(newValue);
-        setWeights({["cena"]:new_value, ["przebieg"]:new_przebieg, ["klimatyzacja"]:new_klimatyzacja, ["sredni_koszt_naprawy"]:new_koszt });
-
-    }else{
-        if(num === 2){
-            setPrzebiegSliderValue(newValue);
-            setWeights({["cena"]:new_cena, ["przebieg"]:new_value, ["klimatyzacja"]:new_klimatyzacja, ["sredni_koszt_naprawy"]:new_koszt });
-
-        }else{
-            if(num === 3){
-              setKlimatyzacjaSliderValue(newValue);
-              setWeights({["cena"]:new_cena, ["przebieg"]:new_przebieg, ["klimatyzacja"]:new_value, ["sredni_koszt_naprawy"]:new_koszt });
-            }else{
-              setKosztSliderValue(newValue);
-              setWeights({["cena"]:new_cena, ["przebieg"]:new_przebieg, ["klimatyzacja"]:new_klimatyzacja, ["sredni_koszt_naprawy"]:new_value });
-        }
-    }
-    
-  }};
-
-  // const fetchWeights = () =>{
-  //   fetch(`http://localhost:3040/weight`)
-  //   .then((response) => response.json())
-  //     .then((data) => {
-
-  //       let new_sort = []
-  //       let new_data = data
-  //       console.log(new_data)
-  //       new_data.map(element => {
-
-  //         console.log(element)
-  //       })
-  //       // new_sort.push(element)
-
-  //       console.log(new_sort)
-  //       setSorted(new_sort);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching data:', error);
-  //     });
-  // }
-
   const handleNewSliderChange = (event, newValue, activeThumb, type) => {
     if (!Array.isArray(newValue)) {
       return;
@@ -455,7 +374,7 @@ const Index = (props) => {
     );
     // console.log(new_car_data)
     setFilteredCars(new_car_data);
-    UpdateCharts(1,new_car_data);
+    UpdateCharts(activeNav,new_car_data);
   }
 
 
@@ -474,7 +393,7 @@ const Index = (props) => {
     <>
       <Header 
       UpdateCharts={UpdateCharts}
-      handleSliderChange={handleSliderChange}
+
       priceMin = {priceMin}
       priceMax = {priceMax}
       courseMin = {courseMin}
@@ -504,7 +423,8 @@ const Index = (props) => {
                     <h2 className="text-white mb-0">{bestCar === "no car matches your preferences"? bestCar :"Best option: " + bestCar}</h2>
                   </div>
                   <div className="col">
-                    <Nav className="justify-content-end" pills>
+                    <Nav className="justify-content-end">
+
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
@@ -512,62 +432,86 @@ const Index = (props) => {
                           })}
                           href="#pablo"
                           onClick={(e) => toggleNavs(e, 1)}
+                          style={{color:activeNav===1?"#5e72e4":"#525f7f", ':hover':"#5e72e4"}}
+
                         >
                           <span className="d-none d-md-block">All</span>
                           <span className="d-md-none">All</span>
                         </NavLink>
                       </NavItem>
+
+
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
                             active: activeNav === 2,
                           })}
                           href="#pablo"
-                          onClick={(e) => toggleNavs(e, 2)}
+                          onClick={(e) => {toggleNavs(e, 2, 0);}}
+                          style={{color:opened[0]?"#5e72e4":"#525f7f"}}
                         >
                           <span className="d-none d-md-block">Price</span>
                           <span className="d-md-none">$</span>
                         </NavLink>
                       </NavItem>
+
+
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
-                            active: activeNav === 3,
+                            active: activeNav === 2,
                           })}
                           data-toggle="tab"
                           href="#pablo"
-                          onClick={(e) => toggleNavs(e, 3)}
+                          onClick={(e) => {toggleNavs(e, 2, 1);}}
+                          style={{color:opened[1]?"#5e72e4":"#525f7f"}}
+
                         >
                           <span className="d-none d-md-block">km</span>
                           <span className="d-md-none">km</span>
                         </NavLink>
                       </NavItem>
+
+
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
-                            active: activeNav === 4,
+                            active: activeNav === 2,
                           })}
                           data-toggle="tab"
                           href="#pablo"
-                          onClick={(e) => toggleNavs(e, 4)}
+                          onClick={(e) => {toggleNavs(e, 2, 2);}}
+                          style={{color:opened[2]?"#5e72e4":"#525f7f"}}
+
                         >
                           <span className="d-none d-md-block">AC</span>
                           <span className="d-md-none">AC</span>
                         </NavLink>
                       </NavItem>
+
+
+
                       <NavItem>
                         <NavLink
                           className={classnames("py-2 px-3", {
-                            active: activeNav === 5,
+                            active: activeNav === 2,
                           })}
                           data-toggle="tab"
                           href="#pablo"
-                          onClick={(e) => toggleNavs(e, 5)}
+                          onClick={(e) => {toggleNavs(e, 2, 3);}}
+                          style={{color:opened[3]?"#5e72e4":"#525f7f"}}
+
                         >
                           <span className="d-none d-md-block">AVG</span>
                           <span className="d-md-none">AVG</span>
                         </NavLink>
                       </NavItem>
+
+
+
+
+
+
                     </Nav>
                   </div>
                 </Row>
