@@ -47,6 +47,7 @@ import classnames from "classnames";
 import Chart from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
 import Best_Element from "../Best_Element";
+import * as XLSX from 'xlsx';
 
 
 const Create_Generic_Tables = (props) => {
@@ -115,12 +116,6 @@ const Create_Generic_Tables = (props) => {
 
     setRows(new_rows)
   }
-
-
-  useEffect(()=>{
-    UpdateCharts(activeNav);
-  },[opened])
-
 
   const handleChange = (index, type, event) => {
 
@@ -230,12 +225,15 @@ const Create_Generic_Tables = (props) => {
     setActiveNav(index);
   };
 
-  function UpdateCharts(index) {
-
+  const UpdateCharts = (index) =>{
     let keys = []
-    props.generic_table.filter(data=>(data.sorting === "ASC" || data.sorting === "DESC") && data.type ==="number").map(element=>{
-      keys.push(element.name);
-    })
+    if(Array.isArray(props.generic_table)&& props.generic_table.length !== 0){
+
+      
+      props.generic_table.filter(data=>(data.sorting === "ASC" || data.sorting === "DESC") && data.type ==="number").map(element=>{
+        keys.push(element.name);
+      })
+    }
 
     
     let new_filtered_data = props.generic_tableValues;
@@ -251,12 +249,6 @@ const Create_Generic_Tables = (props) => {
         return modifiedData;
       });
     }
-
-
-
-
-
-
 
       const best_element = new Best_Element();
       let results = []
@@ -291,25 +283,6 @@ const Create_Generic_Tables = (props) => {
         })
 
         let chart1Data = {};
-
-        // chart1Data = {
-        //   labels: names,
-        //   datasets: [
-        //     {
-        //       label: "sum",
-        //       data: sum,
-        //       borderColor: 'rgba(255, 0, 0, 0.65)',
-        //     },
-        //     ...keys.map((key,index)=>{
-        //       return{
-        //         label: key,
-        //         data: new_results[key],
-        //         borderColor: colors[index],
-
-        //       }
-        //     })
-        //   ],
-        // };
         chart1Data = {
           labels: names,
           datasets: [
@@ -328,11 +301,6 @@ const Create_Generic_Tables = (props) => {
             })
           ],
         };
-
-
-
-
-
         setLineData(chart1Data);
       
       }else{
@@ -361,12 +329,54 @@ const Create_Generic_Tables = (props) => {
     setSorted(confirms);
   };
   
+  const exclToJson = (event) =>{
+    const inputElement = event.target;
+    const file = inputElement.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = function(event) {
+      const data = event.target.result;
+  
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  
+      console.log("");
+      console.log(Object.keys(jsonData[0]).slice(1));
+      props.setGeneric_table({name:"name", type:"text", sorting:"don't show as a chart variable"})
+      setRows({name:"name", type:"text", sorting:"don't show as a chart variable"})
+  
+      let newRow = []
+      Object.keys(jsonData[0]).slice(1).map((key,index)=>{
+        
+        newRow.push({ name: key[0]!=="_"&&key[1]!=="_"?key:"_" + index, type: "number", sorting: "ASC" })
+      })
+      props.setGeneric_table(newRow);
+      setRows(newRow);
+
+
+
+
+
+
+
+
+
+      
+    };
+    reader.readAsArrayBuffer(file);
+  
+  }
+
+
   useEffect(()=>{
     UpdateCharts(activeNav);
     toggleNavs(0,activeNav,"")
   },[sorted])
 
-
+  useEffect(()=>{
+    UpdateCharts(activeNav);
+  },[opened])
 
 
   return (
@@ -395,6 +405,12 @@ const Create_Generic_Tables = (props) => {
                   <span>1</span>
                 </div>
                 <span style={{color:hasRedColor?"red":"#525f7f"}}>{hasRedColor?" Column names must be unique and not empty":" Select properties"}</span>
+              </th>
+              <th style={{width:"20px"}}>
+                
+              </th>
+              <th>
+                <Input type="file" onChange={(event)=>exclToJson(event)} />
               </th>
             </tr>
           </table>
