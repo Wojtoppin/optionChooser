@@ -70,7 +70,7 @@ const Create_Generic_Tables = (props) => {
   // index
   const [activeNav, setActiveNav] = useState(0);
   const [lineData, setLineData] = useState({});
-
+  const [results, setResults] = useState([])
 
   const [weightValues, setWeightValues] = useState({});
   const [sorted, setSorted] = useState({});
@@ -286,6 +286,7 @@ const Create_Generic_Tables = (props) => {
 
         setBestOption(results[0]["name"])
 
+        setResults(results)
         console.log(results)
         let new_results = []
 
@@ -414,6 +415,20 @@ const Create_Generic_Tables = (props) => {
     }
 
 
+  }
+
+  const downloadJSONFile = () =>{
+    const json = JSON.stringify(results);
+
+    const blob = new Blob([json], { type: 'application/json' });
+  
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'results.json';
+  
+    link.click();
+  
+    window.URL.revokeObjectURL(link.href);
   }
 
   useEffect(()=>{
@@ -733,9 +748,10 @@ const Create_Generic_Tables = (props) => {
                   </div>}
                 </Row>
               </CardHeader>
-              {isChartVisible && bestOption.length!== 0 && <CardBody>
-                <div>
+              {isChartVisible && bestOption.length!== 0 && <CardBody style={{minHeight:"360px"}}>
+                <div  style={{height:"360px"}}>
                   <Line
+                   
                     options={{
                       tooltips: {
                         enabled: false,
@@ -745,6 +761,10 @@ const Create_Generic_Tables = (props) => {
                   />
                 </div>
               </CardBody>}
+              {isChartVisible && <CardFooter className="border-0">
+                <Button color="primary" onClick={downloadJSONFile}>Download results</Button>
+
+              </CardFooter>}
             </Card>
           </Col>
         </Row>
