@@ -76,9 +76,11 @@ const Create_Generic_Tables = (props) => {
   const [sorted, setSorted] = useState({});
   const [bestOption, setBestOption] = useState({});
   const [opened, setOpened] = useState([])
+  const [currentPagination, setCurrentPagination] = useState(1)
+  const paginationDataCount = 8;
 
-  var weights = [];
-  var confirms = [];
+  const weights = [];
+  const confirms = [];
 
   const handleChangeCurrentAction = (index) =>{
     if (index === 1){
@@ -227,25 +229,48 @@ const Create_Generic_Tables = (props) => {
 
   const UpdateCharts = (index) =>{
     let keys = []
-    if(Array.isArray(props.generic_table)&& props.generic_table.length !== 0){
+    let deletedKeys = []
+    let new_filtered_data = [];
+    let not_filtered_data = [];
 
-      
+    if(Array.isArray(props.generic_table)&& props.generic_table.length !== 0){
       props.generic_table.filter(data=>(data.sorting === "ASC" || data.sorting === "DESC") && data.type ==="number").map(element=>{
         keys.push(element.name);
       })
     }
 
-    
-    let new_filtered_data = props.generic_tableValues;
-      
+    if(Array.isArray(props.generic_table)&& props.generic_table.length !== 0){
+      props.generic_table.filter(data=>data.type ==="text" && data.name !== "name").map(element=>{
+        deletedKeys.push(element.name);
+      })
+    }
+    console.log(keys)
+    console.log(deletedKeys)
+
     if(Array.isArray(props.generic_tableValues) && props.generic_tableValues.length !==0){
-      new_filtered_data = new_filtered_data.map((data) => {
+      new_filtered_data = props.generic_tableValues.map((data) => {
         const modifiedData = JSON.parse(JSON.stringify(data));
         keys.map((key,index)=>{
           if(!opened[index]){
             delete modifiedData[key]
           }
         })
+
+        deletedKeys.map(key=>{
+          delete modifiedData[key]
+        })
+
+        return modifiedData;
+      });
+    }
+
+    if(Array.isArray(props.generic_tableValues) && props.generic_tableValues.length !==0){
+      not_filtered_data = props.generic_tableValues.map((data) => {
+        const modifiedData = JSON.parse(JSON.stringify(data));
+        deletedKeys.map(key=>{
+          delete modifiedData[key]
+        })
+
         return modifiedData;
       });
     }
@@ -254,14 +279,14 @@ const Create_Generic_Tables = (props) => {
       let results = []
       if(props.generic_tableValues.length > 0 && Array.isArray(sorted) && sorted.length !== 0){
         if(index === 0){
-          results = best_element.onLoad(props.generic_tableValues, weightValues, sorted).winning_data;
+          results = best_element.onLoad(not_filtered_data, weightValues, sorted).winning_data;
         }else{
           results = best_element.onLoad(new_filtered_data, weightValues, sorted).winning_data;
         }
 
         setBestOption(results[0]["name"])
 
-
+        console.log(results)
         let new_results = []
 
         keys.map(key=>{
@@ -310,7 +335,6 @@ const Create_Generic_Tables = (props) => {
 
   const getRandomColor=(index)=>{
     const new_color = 340/props.generic_table.length*index;
-    console.log(new_color)
     return `hsl(${new_color},100%,50%)`;
   }
 
@@ -346,13 +370,9 @@ const Create_Generic_Tables = (props) => {
       });
 
 
-      console.log("");
-      console.log(updatedData);
-
       let newRow = []
       Object.keys(updatedData[0]).map((key,index)=>{
         if(index===0){
-          console.log(key)
           newRow.push({name:"name", type:"text", sorting:"don't show as a chart variable"})
         }else{
           if(index!==1){
@@ -376,6 +396,25 @@ const Create_Generic_Tables = (props) => {
   
   }
 
+  const handlePaginationChange = (event, buttonNumber) =>{
+    if(event !== 0){
+      event.preventDefault();
+    }
+    if(buttonNumber === "previous" && currentPagination !== 1){
+      setCurrentPagination(currentPagination-1);
+
+    }else{
+      if(buttonNumber === "next" && currentPagination < props.generic_tableValues.length/paginationDataCount){
+        setCurrentPagination(currentPagination+1);
+      }else{
+        if (buttonNumber !== "previous" && buttonNumber !== "next"){
+          setCurrentPagination(buttonNumber);
+        }
+      }
+    }
+
+
+  }
 
   useEffect(()=>{
     UpdateCharts(activeNav);
@@ -534,7 +573,7 @@ const Create_Generic_Tables = (props) => {
 
                 <tbody>
                 
-                {Array.isArray(newData) && props.generic_tableValues.map((elementData, elementIndex) => {
+                {Array.isArray(newData) && props.generic_tableValues.slice((currentPagination-1) * paginationDataCount ,currentPagination * paginationDataCount).map((elementData, elementIndex) => {
                   return (
                         <tr key={"tr" + elementIndex}>
                             {props.generic_table.map((element,newIndex) => (
@@ -542,7 +581,9 @@ const Create_Generic_Tables = (props) => {
                                   
 
                                     {element.type === "checkbox" && <Input type="checkbox" onChange={(event) =>handleNewChange(event,elementIndex)} />}
-                                    {element.type === "text" && <Input style={{minWidth:"100px"}} type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />}
+                                    {element.type === "text" && element.name === "name"? 
+                                    <Input style={{minWidth:"100px"}} type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />
+                                    :element.type === "text" && <span>{elementData[element.name]}</span>}
                                     {element.type === "number" && element.name !== "ID" && <Input style={{minWidth:"65px"}} min={0} type={element.type} id={element.name} name={element.name} value={elementData[element.name]} onChange={(event) =>handleNewChange(event,elementIndex)} />}
                                     
                                 </td>
@@ -559,60 +600,64 @@ const Create_Generic_Tables = (props) => {
                 </tbody>
                 <tfoot>
 
-                  <th colSpan={props.generic_table.length-1}>
-                    <Button color="primary" onClick={()=>handleChangeCurrentAction(3)}>Send</Button>
+                  <th>
+                    <Button color="primary" onClick={()=>{handleChangeCurrentAction(3); minMax()}}>Send</Button>
                   </th>
                   <th>
                     <CardFooter className="py-4">
                       <nav aria-label="...">
-                        <Pagination
-                          className="pagination justify-content-end mb-0"
-                          listClassName="justify-content-end mb-0"
-                        >
-                          <PaginationItem className="disabled">
-                            <PaginationLink
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                              tabIndex="-1"
-                            >
-                              <i className="fas fa-angle-left" />
-                              <span className="sr-only">Previous</span>
-                            </PaginationLink>
-                          </PaginationItem>
-                          <PaginationItem className="active">
-                            <PaginationLink
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              1
-                            </PaginationLink>
-                          </PaginationItem>
-                          <PaginationItem>
-                            <PaginationLink
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              2 <span className="sr-only">(current)</span>
-                            </PaginationLink>
-                          </PaginationItem>
-                          <PaginationItem>
-                            <PaginationLink
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              3
-                            </PaginationLink>
-                          </PaginationItem>
-                          <PaginationItem>
-                            <PaginationLink
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <i className="fas fa-angle-right" />
-                              <span className="sr-only">Next</span>
-                            </PaginationLink>
-                          </PaginationItem>
-                        </Pagination>
+                      <Pagination
+                        className="pagination justify-content-end mb-0"
+                        listClassName="justify-content-end mb-0"
+                      >
+                        {/* <PaginationItem className="disabled"> */}
+                        <PaginationItem disabled={true}>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => handlePaginationChange(e,"previous")}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                            <span className="sr-only">Previous</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem  className={currentPagination === 1? "active": ""} >
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => handlePaginationChange(e,currentPagination === 1? 1:currentPagination-1)}
+                          >
+                            {currentPagination === 1? "1":currentPagination-1}
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem   className={currentPagination !== 1? "active": ""}>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => handlePaginationChange(e,currentPagination === 1? 2:currentPagination)}
+                          >
+                            {currentPagination === 1? "2":currentPagination}
+
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => handlePaginationChange(e,currentPagination === 1? 3:currentPagination+1)}
+                          >
+                            {currentPagination === 1? "3":currentPagination+1}
+
+                          </PaginationLink>
+                        </PaginationItem>
+
+                        <PaginationItem disabled={true}>
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={(e) => handlePaginationChange(e,"next")}
+                          >
+                            <i className="fas fa-angle-right" />
+                            <span className="sr-only">Next</span>
+                          </PaginationLink>
+                        </PaginationItem>
+                      </Pagination>
                       </nav>
                     </CardFooter>
                   </th>

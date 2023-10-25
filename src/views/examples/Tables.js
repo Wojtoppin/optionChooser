@@ -63,7 +63,7 @@ const Tables = () => {
   const [topTableTextColor, setTopTableTextColor] = useState("red")//rgb(255, 0, 0)  rgb(0, 255, 0)
 
   const [currentPagination, setCurrentPagination] = useState(1)
-  const [paginationDataCount, setPaginationDataCount] = useState(10)
+  const paginationDataCount = 10;
   const [isPreviousActive, setIsPreviousActive] = useState(true);
   const [isNextActive, setIsNextActive] = useState(true);
 
