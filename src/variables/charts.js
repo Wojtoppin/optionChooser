@@ -229,7 +229,7 @@ function chartOptions() {
           },
         },
         tooltips: {
-          enabled: true,
+          enabled: false,
           mode: "index",
           intersect: false,
         },

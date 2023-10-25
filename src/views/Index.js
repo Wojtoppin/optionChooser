@@ -52,15 +52,10 @@ import {
 } from "variables/charts.js";
 
 import Header from "components/Headers/Header.js";
-import { colors } from "@mui/material";
 
 const Index = (props) => {
-  const [cenaSliderValue, setCenaSliderValue] = useState(50);
-  const [przebiegSliderValue, setPrzebiegSliderValue] = useState(50);
-  const [klimatyzacjaSliderValue, setKlimatyzacjaSliderValue] = useState(50);
-  const [kosztSliderValue, setKosztSliderValue] = useState(50);
   const [activeNav, setActiveNav] = useState(1);
-  const [weight, setWeights] = useState({cena:cenaSliderValue, przebieg:przebiegSliderValue, klimatyzacja:klimatyzacjaSliderValue, sredni_koszt_naprawy:kosztSliderValue})
+  const weight = {cena:1, przebieg:1, klimatyzacja:1, sredni_koszt_naprawy:1}
   const [cars, setCars] = useState({})
   const [producers, setProducers] = useState({})
   const [producersPercentage, setProducersPercentage] = useState()
@@ -69,7 +64,7 @@ const Index = (props) => {
   const [isASC, setIsASC] = useState({ID:"ASC", name:"ASC", cena:"ASC", przebieg:"ASC", klimatyzacja:"ASC", sredni_koszt_naprawy:"ASC", producer:"ASC"})
   const [bestCar, setBestCar] = useState("")
   const [bestProducer, setBestProducer] = useState("")
-  const [sorted, setSorted] = useState([{cena: 50}, {przebieg: 50}, {klimatyzacja: 50}, {sredni_koszt_naprawy: 50}])
+  const sorted = [{cena: 50}, {przebieg: 50}, {klimatyzacja: 50}, {sredni_koszt_naprawy: 50}]
 
   const [opened, setOpened] = useState([false,false,false,false])
 
@@ -113,11 +108,7 @@ const Index = (props) => {
     setActiveNav(index);
   };
 
-  useEffect(()=>{
-    UpdateCharts(activeNav)
-  },[opened])
-
-  function UpdateCharts(index) {
+  const UpdateCharts = (index) =>{
       let new_filtered_cars = filteredCars;
       
       if(Array.isArray(filteredCars) && filteredCars.length !==0){
@@ -162,6 +153,7 @@ const Index = (props) => {
         km.push(element.przebieg);
         AC.push(element.klimatyzacja);
         repair.push(element.sredni_koszt_naprawy);
+        return null;
       })
       let chart1Data = {};
       let chart2Data = {};
@@ -204,15 +196,18 @@ const Index = (props) => {
 
     results.map(element=>{
       producent_result.push({producer: element.producer, sum: element.sum });
+      return null;
     })
 
     results.map(element=>{
       producentSum[element.producer]=0;
       producent[element.producer]=0;
+      return null;
     })
     results.map(element=>{
       producentSum[element.producer]+=element.sum;
       producent[element.producer]++;
+      return null;
 
     })
 
@@ -245,58 +240,60 @@ const Index = (props) => {
   }else{
     setBestCar("no car matches your preferences")
   }
-}
+  }
 
-    const minMax = () =>{
-      fetch(`http://localhost:3040/data`)
-      .then(response => response.json())
-      .then(data => {
-        let maxPrice = 0;
-        let maxCourse = 0;
-        let maxRepair = 0;
-        data.map(element =>{
-          if(element.cena > maxPrice){
-            maxPrice = element.cena;
-          }
-          if(element.przebieg > maxCourse){
-            maxCourse = element.przebieg;
-          }
-          if(element.sredni_koszt_naprawy > maxRepair){
-            maxRepair = element.sredni_koszt_naprawy;
-          }
-        })
-        let minPrice = maxPrice;
-        let minCourse = maxCourse;
-        let minRepair = maxRepair;
-        data.map(element=>{
-          if (element.cena < minPrice){
-            minPrice = element.cena;
-          }
-          if(element.przebieg < minCourse){
-            minCourse = element.przebieg;
-          }
-          if(element.sredni_koszt_naprawy < minRepair){
-            minRepair = element.sredni_koszt_naprawy;
-          }
-        })
-
-        setPriceMin(minPrice);
-        setPriceMax(maxPrice);
-        setPriceRange([minPrice,maxPrice])
-  
-        setCourseMin(minCourse);
-        setCourseMax(maxCourse);
-        setCourseRange([minCourse,maxCourse])
-        
-        setRepairMin(minRepair);
-        setRepairMax(maxRepair);
-        setRepairRange([minRepair, maxRepair])
+  const minMax = () =>{
+    fetch(`http://localhost:3040/data`)
+    .then(response => response.json())
+    .then(data => {
+      let maxPrice = 0;
+      let maxCourse = 0;
+      let maxRepair = 0;
+      data.map(element =>{
+        if(element.cena > maxPrice){
+          maxPrice = element.cena;
+        }
+        if(element.przebieg > maxCourse){
+          maxCourse = element.przebieg;
+        }
+        if(element.sredni_koszt_naprawy > maxRepair){
+          maxRepair = element.sredni_koszt_naprawy;
+        }
+        return null;
       })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-      });
+      let minPrice = maxPrice;
+      let minCourse = maxCourse;
+      let minRepair = maxRepair;
+      data.map(element=>{
+        if (element.cena < minPrice){
+          minPrice = element.cena;
+        }
+        if(element.przebieg < minCourse){
+          minCourse = element.przebieg;
+        }
+        if(element.sredni_koszt_naprawy < minRepair){
+          minRepair = element.sredni_koszt_naprawy;
+        }
+        return null;
+      })
+
+      setPriceMin(minPrice);
+      setPriceMax(maxPrice);
+      setPriceRange([minPrice,maxPrice])
+
+      setCourseMin(minCourse);
+      setCourseMax(maxCourse);
+      setCourseRange([minCourse,maxCourse])
       
-    }
+      setRepairMin(minRepair);
+      setRepairMax(maxRepair);
+      setRepairRange([minRepair, maxRepair])
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+    
+  }
 
   const refreashData = (code="", direction="") =>{
     let link = `http://localhost:3040/data`;
@@ -306,8 +303,7 @@ const Index = (props) => {
     fetch(link)
     .then(response => response.json())
     .then(data => {
-
-        setCars(data);
+      setCars(data);
     })
     .catch(error => {
         console.error('Error fetching data:', error);
@@ -325,6 +321,7 @@ const Index = (props) => {
         setProducers(data);
         data.map(element =>{
           sum += element.counted;
+          return null;
         })
         setProducersPercentage(sum);
     })
@@ -372,7 +369,6 @@ const Index = (props) => {
                   && car.sredni_koszt_naprawy <= repairRange[1]
     
     );
-    // console.log(new_car_data)
     setFilteredCars(new_car_data);
     UpdateCharts(activeNav,new_car_data);
   }
@@ -380,14 +376,21 @@ const Index = (props) => {
 
   useEffect(() => {
     document.title = 'REACT RISK CALCULATOR';
+    minMax();
     refreashData();
     refreashProducers();
-    minMax();
   }, []);
 
   useEffect(() => {
-    UpdateCharts(1);
+    UpdateCharts(activeNav);
+  }, [cars, opened, activeNav]);
+
+  useEffect(() => {
+    if(Array.isArray(cars) && cars.length > 0){
+      filterCars();
+    }
   }, [cars]);
+
 
   return (
     <>
@@ -519,6 +522,7 @@ const Index = (props) => {
               <CardBody>
                 <div className="chart">
                   <Line
+
                     data={lineData}
                     options={chartExample1.options}
                     getDatasetAtEvent={(e) => console.log(cars)}
@@ -563,7 +567,7 @@ const Index = (props) => {
                     <Button
                       color="primary"
                       href="#pablo"
-                      onClick={(e) => (e.preventDefault(), refreashData())}
+                      onClick={(e) => {e.preventDefault(); refreashData()}}
                       size="sm"
                     >
                       See all
@@ -575,28 +579,28 @@ const Index = (props) => {
                 <thead className="thead-light">
                   <tr>
                   {/* <th scope="col" onClick={() =>(refreashData("ID", isASC["ID"]), toggleSortingOrder("ID"))}>ID</th> */}
-                    <th scope="col" onClick={() =>(refreashData("name", isASC["name"]), toggleSortingOrder("name"))}>Car</th>
-                    <th scope="col" onClick={() =>(refreashData("cena", isASC["cena"]), toggleSortingOrder("cena"))}>Price</th>
-                    <th scope="col" onClick={() =>(refreashData("przebieg", isASC["przebieg"]), toggleSortingOrder("przebieg"))}>Course</th>
-                    <th scope="col" onClick={() =>(refreashData("klimatyzacja", isASC["klimatyzacja"]), toggleSortingOrder("klimatyzacja"))}>AC</th>
-                    <th scope="col" onClick={() =>(refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]), toggleSortingOrder("sredni_koszt_naprawy"))}>Avg repair cost</th>
-                    <th scope="col" onClick={() =>(refreashData("producer", isASC["producer"]), toggleSortingOrder("producer"))}>Producer</th>
+                    <th scope="col" onClick={() =>{refreashData("name", isASC["name"]); toggleSortingOrder("name")}}>Car</th>
+                    <th scope="col" onClick={() =>{refreashData("cena", isASC["cena"]); toggleSortingOrder("cena")}}>Price</th>
+                    <th scope="col" onClick={() =>{refreashData("przebieg", isASC["przebieg"]); toggleSortingOrder("przebieg")}}>Course</th>
+                    <th scope="col" onClick={() =>{refreashData("klimatyzacja", isASC["klimatyzacja"]); toggleSortingOrder("klimatyzacja")}}>AC</th>
+                    <th scope="col" onClick={() =>{refreashData("sredni_koszt_naprawy", isASC["sredni_koszt_naprawy"]); toggleSortingOrder("sredni_koszt_naprawy")}}>Avg repair cost</th>
+                    <th scope="col" onClick={() =>{refreashData("producer", isASC["producer"]); toggleSortingOrder("producer")}}>Producer</th>
 
                     
                   </tr>
                 </thead>
                 <tbody>
                   
-                    {Array.isArray(cars) && cars.map(element =>{
+                    {Array.isArray(cars) && cars.map((element,index) =>{
                       return(
-                        <tr>
+                        <tr key={"tr"+element.name + " " + index}>
                           {/* <th scope="row">{element.ID}</th> */}
-                          <th scope="row">{element.name}</th>
-                          <td>{element.cena}</td>
-                          <td>{element.przebieg}</td>
-                          <td>{element.klimatyzacja}</td>
-                          <td>{element.sredni_koszt_naprawy}</td>
-                          <td>{element.producer}</td>
+                          <th scope="row" key={"td"+"name" + index}>{element.name}</th>
+                          <td key={"td"+"cena" + index}>{element.cena}</td>
+                          <td key={"td"+"przebieg" + index}>{element.przebieg}</td>
+                          <td key={"td"+"klimatyzacja" + index}>{element.klimatyzacja}</td>
+                          <td key={"td"+"sredni_koszt_naprawy" + index}>{element.sredni_koszt_naprawy}</td>
+                          <td key={"td"+"producer" + index}>{element.producer}</td>
                         </tr>
                     )})}
                     

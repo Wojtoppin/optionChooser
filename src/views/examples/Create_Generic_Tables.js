@@ -45,7 +45,7 @@ import Header from "components/Headers/Header.js";
 import classnames from "classnames";
 // javascipt plugin for creating charts
 import Chart from "chart.js";
-import { Line, Bar } from "react-chartjs-2";
+import { Line} from "react-chartjs-2";
 import Best_Element from "../Best_Element";
 import * as XLSX from 'xlsx';
 
@@ -165,6 +165,7 @@ const Create_Generic_Tables = (props) => {
       if(element.name.length === 0){
         hasRed = true;
       }
+      return null;
     })
     setHasRedColor(hasRed)
   }
@@ -188,6 +189,8 @@ const Create_Generic_Tables = (props) => {
     let start_data = {}
     props.generic_table.map(element=>{
         start_data[element.name] = "";
+      return null;
+
     })
     setNewData([...newData, start_data])
     props.setGeneric_tableValues([...newData, start_data]);
@@ -236,16 +239,18 @@ const Create_Generic_Tables = (props) => {
     if(Array.isArray(props.generic_table)&& props.generic_table.length !== 0){
       props.generic_table.filter(data=>(data.sorting === "ASC" || data.sorting === "DESC") && data.type ==="number").map(element=>{
         keys.push(element.name);
+        return null;
+
       })
     }
 
     if(Array.isArray(props.generic_table)&& props.generic_table.length !== 0){
       props.generic_table.filter(data=>data.type ==="text" && data.name !== "name").map(element=>{
         deletedKeys.push(element.name);
+        return null;
+
       })
     }
-    console.log(keys)
-    console.log(deletedKeys)
 
     if(Array.isArray(props.generic_tableValues) && props.generic_tableValues.length !==0){
       new_filtered_data = props.generic_tableValues.map((data) => {
@@ -254,10 +259,14 @@ const Create_Generic_Tables = (props) => {
           if(!opened[index]){
             delete modifiedData[key]
           }
+          return null;
+
         })
 
         deletedKeys.map(key=>{
           delete modifiedData[key]
+          return null;
+
         })
 
         return modifiedData;
@@ -269,6 +278,8 @@ const Create_Generic_Tables = (props) => {
         const modifiedData = JSON.parse(JSON.stringify(data));
         deletedKeys.map(key=>{
           delete modifiedData[key]
+          return null;
+
         })
 
         return modifiedData;
@@ -285,19 +296,25 @@ const Create_Generic_Tables = (props) => {
         }
 
         setBestOption(results[0]["name"])
+        
 
         setResults(results)
-        console.log(results)
         let new_results = []
 
         keys.map(key=>{
             new_results[key] = [];
+            return null;
+
         })
 
         keys.map(key=>{
           results.map(element=>{
             new_results[key].push(element[key])
+            return null;
+
           })
+          return null;
+
         })
 
 
@@ -306,6 +323,8 @@ const Create_Generic_Tables = (props) => {
         results.map(element =>{
           names.push(element.name);
           sum.push(element.sum);
+          return null;
+
         })
 
         let chart1Data = {};
@@ -342,14 +361,20 @@ const Create_Generic_Tables = (props) => {
   const minMax = () => {
     props.generic_table.filter((data) => (data.sorting === "ASC" || data.sorting === "DESC") && data.type === "number").map(key => {
       weights[key.name] = 1
+      return null;
+      
     });
     
     setWeightValues(weights);
     props.generic_table.filter((data) => data.sorting === "ASC").map(key => {
       confirms.push({ [key.name]: 1 });
+      return null;
+
     });
     props.generic_table.filter((data) => data.sorting === "DESC").map(key => {
       confirms.push({ [key.name]: 0 });
+      return null;
+
     });
     setSorted(confirms);
   };
@@ -377,10 +402,11 @@ const Create_Generic_Tables = (props) => {
           newRow.push({name:"name", type:"text", sorting:"don't show as a chart variable"})
         }else{
           if(index!==1){
-            newRow.push({ name: key, type: "number", sorting: "DESC" })
-            // key[0]!=="_"&&key[1]!=="_"?key:"_" + index
+            newRow.push({ name: key, type: "number", sorting: "ASC" })
           }
         }
+      return null;
+
       })
       
       
@@ -453,7 +479,7 @@ const Create_Generic_Tables = (props) => {
         generic_index={true}
       />
 
-      <Container className="mt--7" fluid>
+      {isSelectPropertiesVisible &&<Container className="mt--7" fluid>
         <Row>
           <div className="col">
           <Card className="shadow">
@@ -471,9 +497,9 @@ const Create_Generic_Tables = (props) => {
               <th style={{width:"20px"}}>
                 
               </th>
-              {isSelectPropertiesVisible &&<th>
+              <th>
                 <Input type="file" onChange={(event)=>exclToJson(event)} />
-              </th>}
+              </th>
             </tr>
           </table>
 
@@ -518,8 +544,8 @@ const Create_Generic_Tables = (props) => {
                   </th>
                   <th>
                     <Input type="select" style={{color:"#16161D", borderColor:"#5e72e4"}} onChange={(event) => handleChange(index, 3, event)} disabled={index === 0? true:false}>
-                      {element.type === "number" && <option selected={element.sorting === "ASC"}>ASC</option>}
-                      {element.type === "number" && <option selected={element.sorting === "DESC"}>DESC</option>}
+                      {element.type === "number" && <option selected={element.sorting === "ASC"}>Incrementing</option>}
+                      {element.type === "number" && <option selected={element.sorting === "DESC"}>Decrementing</option>}
                       <option selected={element.sorting === "don't show as a chart variable"}>don't show as a chart variable</option>
                     </Input>
                   </th>
@@ -543,9 +569,9 @@ const Create_Generic_Tables = (props) => {
         </Card>
           </div>
         </Row>
-      </Container>
+      </Container>}
 
-      <Container style={{marginTop:"20px"}} fluid>
+      {isSelectObjectsVisible && <Container className="mt--7" fluid>
         <Row>
           <div className="col">
           <Card className="shadow">
@@ -686,9 +712,9 @@ const Create_Generic_Tables = (props) => {
           
           </div>
         </Row>
-      </Container>
+      </Container>}
 
-      <Container style={{marginTop:"20px"}} fluid>
+      {isChartVisible && <Container className="mt--7" fluid>
         <Row>
           <Col className="mb-5 mb-xl-0" xl="12">
             <Card className="bg-gradient-default shadow" style={{border:"hidden"}}>
@@ -718,7 +744,7 @@ const Create_Generic_Tables = (props) => {
                             className={classnames("py-2 px-3", {
                               active: activeNav === 0,
                             })}
-                            style={{color:activeNav===0?"green":"#525f7f"}}
+                            style={{color:activeNav===0?"#02a80a":"#525f7f"}}
                             href="#pablo"
                             onClick={(e) => toggleNavs(e, 0)}
                           >
@@ -734,7 +760,7 @@ const Create_Generic_Tables = (props) => {
                             className={classnames("py-2 px-3", {
                               active: activeNav === 1,
                             })}
-                            style={{color:opened[index]?"green":"#525f7f"}}
+                            style={{color:opened[index]?"#02a80a":"#525f7f"}}
 
                             href="#pablo"
                             onClick={(e) => toggleNavs(e, 1, index)}
@@ -768,7 +794,7 @@ const Create_Generic_Tables = (props) => {
             </Card>
           </Col>
         </Row>
-      </Container>
+      </Container>}
     </>
   );
 };

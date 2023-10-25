@@ -15,26 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Icons from "views/examples/Icons.js";
-import Generic_Tables from "views/examples/Generic_Tables";
 import Create_Generic_Tables from "views/examples/Create_Generic_Tables";
-import Generic_Index from "views/Generic_Index";
 
 var generic_routes = [
-  // {
-  //   path: "/generic/index",
-  //   name: "Dashboard",
-  //   icon: "ni ni-tv-2 text-primary",
-  //   component: <Generic_Index/>,
-  //   layout: "/admin",
-  // },
-  // {
-  //   path: "/generic/tables",
-  //   name: "Filter/Add generic data",
-  //   icon: "ni ni-bullet-list-67 text-red",
-  //   component: <Generic_Tables />,
-  //   layout: "/admin",
-  // },
   {
     path: "/generic/new_tables",
     name: "Create Your Own Chart",
@@ -42,12 +25,5 @@ var generic_routes = [
     component: <Create_Generic_Tables />,
     layout: "/admin",
   },
-  // {
-  //   path: "/generic/icons",
-  //   name: "Icons",
-  //   icon: "ni ni-planet text-blue",
-  //   component: <Icons />,
-  //   layout: "/admin",
-  // },
 ];
 export default generic_routes;
