@@ -164,7 +164,7 @@ const Index = (props) => {
             {
               label: "Sum",
               data: sum,
-              borderColor: 'rgba(255, 0, 0, 0.65)',
+              borderColor: 'rgba(255, 255, 255, 0.65)',
               
             },
             {

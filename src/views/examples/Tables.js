@@ -33,6 +33,7 @@ import {
   Table,
   Container,
   Row,
+  Input,
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
@@ -59,11 +60,11 @@ const Tables = () => {
   const [isTablesVisible, setIsTablesVisible] = useState(true);
   const [currentAction, setCurrentAction] = useState("Filtering data ");
   const [formData, setFormData] = useState({name: "", cena: 0, przebieg:0, klimatyzacja:0, sredni_koszt_naprawy:0});
-  const [topTableText, setTopTableText] = useState("")
+  const [topTableText, setTopTableText] = useState("");
   const [topTableTextColor, setTopTableTextColor] = useState("red")//rgb(255, 0, 0)  rgb(0, 255, 0)
 
   const [currentPagination, setCurrentPagination] = useState(1)
-  const paginationDataCount = 10;
+  const paginationDataCount = 8;
   const [isPreviousActive, setIsPreviousActive] = useState(true);
   const [isNextActive, setIsNextActive] = useState(true);
 
@@ -224,10 +225,9 @@ const Tables = () => {
     }
   }
 
-  const handleSubmitForm = (event) =>{
+  const handleSubmitForm = () =>{
     let new_form_data = {name: formData.name, cena: formData.cena, przebieg: formData.przebieg, klimatyzacja: formData.klimatyzacja, sredni_koszt_naprawy:formData.sredni_koszt_naprawy, producer_id:filterProducer}
   
-    event.preventDefault();
     fetch('http://localhost:3040/addData', {
     method: 'POST',
     headers: {
@@ -418,7 +418,7 @@ const Tables = () => {
                     <th scope="col">Price {"<" + priceRange[0] + ", " + priceRange[1] + ">"}
                     </th>
                     <th scope="col">Course {"<" + courseRange[0] + ", " + courseRange[1] + ">"}</th>
-                    <th scope="col">AC</th>
+                    <th scope="col">AIR conditioning</th>
                     <th scope="col">AVG repair cost {"<" + repairRange[0] + ", " + repairRange[1] + ">"}</th>
 
                     <th scope="col">Producer</th>
@@ -428,14 +428,13 @@ const Tables = () => {
 
                   <tr>
                     <th scope="col">
-                      <input type="text" name="name" value={filterText} onChange={(event)=>handleFilteredText(event)} onKeyUp={filterCars}/>
+                      <Input type="text" name="name" value={filterText} onChange={(event)=>handleFilteredText(event)} onKeyUp={filterCars}/>
                     </th>
                     <th scope="col">
                       <Slider
-                        style={{ width: "6vw" }}
                         min={priceMin}
                         max={priceMax}
-                        step={1}
+                        step={100}
                         value={priceRange}
                         onChange={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 1)}
                         onChangeCommitted={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 1)}
@@ -445,10 +444,9 @@ const Tables = () => {
                     </th>
                     <th scope="col">
                       <Slider
-                        style={{ width: "6vw" }}
                         min={courseMin}
                         max={courseMax}
-                        step={1}
+                        step={100}
                         value={courseRange}
                         onChange={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 2)}
                         onChangeCommitted={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 2)}
@@ -460,10 +458,9 @@ const Tables = () => {
                     </th>
                     <th scope="col">
                       <Slider
-                          style={{ width: "6vw" }}
                           min={repairMin}
                           max={repairMax}
-                          step={1}
+                          step={10}
                           value={repairRange}
                           onChange={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 3)}
                           onChangeCommitted={(event, newValue, activeThumb) => handleNewSliderChange(event, newValue, activeThumb, 3)}
@@ -473,7 +470,7 @@ const Tables = () => {
 
                     <th scope="col">
                     
-                    <select onChange={(e) => setFilterProducerFunction(e.target.value)}>
+                    <Input type={"select"} onChange={(e) => setFilterProducerFunction(e.target.value)}>
                         <option value="null"></option>
                         {Array.isArray(producers) &&
                           producers !== undefined &&
@@ -482,7 +479,7 @@ const Tables = () => {
                               {element.producer}
                             </option>
                           ))}
-                      </select>
+                      </Input>
                     </th>
                     <th scope="col"></th>
                   </tr>
@@ -493,10 +490,10 @@ const Tables = () => {
                         <tr>
                           {/* <th scope="row">{element.ID}</th> */}
                           <th scope="row"><h6>{element.name}</h6></th>
-                          <td>{element.cena}</td>
-                          <td>{element.przebieg}</td>
-                          <td>{element.klimatyzacja}</td>
-                          <td>{element.sredni_koszt_naprawy}</td>
+                          <td>{element.cena}$</td>
+                          <td>{element.przebieg} km</td>
+                          <td>{element.klimatyzacja === 0?"doesn't work":element.klimatyzacja === 1? "works":"slight issues"}</td>
+                          <td>{element.sredni_koszt_naprawy}$</td>
                           <td>{element.producer}</td>
                           <UncontrolledDropdown>
                         <DropdownToggle
@@ -592,7 +589,6 @@ const Tables = () => {
                   </div>
                 </h3>
               </CardHeader>
-            <form onSubmit={handleSubmitForm}>
                
                <Table
                 // style={{textAlign:"center"}}
@@ -610,7 +606,7 @@ const Tables = () => {
                   <tr>
                     <th><label htmlFor="name">Car model: </label></th>
                     <th>
-                      <input style={{float:"left"}} type="text" name="name" id="name" value={formData.name} onChange={handleChange}/>
+                      <Input bsSize="sm" style={{float:"left", width:"15vw"}} type="text" name="name" id="name" value={formData.name} onChange={handleChange}/>
                       <span id="nameVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>e.g. "Chevrolet Camaro"</span>
                     </th>
                   </tr>
@@ -618,7 +614,7 @@ const Tables = () => {
                   <tr>
                     <th><label htmlFor="cena">Price: </label></th>
                     <th>
-                      <input style={{float:"left"}} type="number" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/>
+                      <Input bsSize="sm" style={{float:"left", width:"15vw"}} type="number" name="cena" id="cena" min="0" value={formData.cena} onChange={handleChange}/>
                       <span id="cenaVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {priceMin}$ - {priceMax}$</span>
                     </th>
                   </tr>
@@ -626,22 +622,22 @@ const Tables = () => {
                   <tr>
                     <th><label htmlFor="przebieg">Course: </label></th>
                     <th>
-                      <input style={{float:"left"}} type="number" name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/>
-                      <span id="przebiegVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {courseMin} km - {courseMax} km</span>
+                      <Input bsSize="sm" style={{float:"left", width:"15vw"}} type="number" name="przebieg" min="0" id="przebieg" value={formData.przebieg} onChange={handleChange}/>
+                      <span id="przebiegVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a course that is in between {courseMin} km - {courseMax} km</span>
                     </th>
 
                   </tr>
                   
                   <tr>
                     <th><label htmlFor="klimatyzacja">Air Conditioning: </label></th>
-                    <th><input style={{float:"left"}} type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
+                    <th><input style={{marginLeft:"0.2vw"}} type="checkbox" name="klimatyzacja" id="klimatyzacja" value={formData.checkbox} onChange={handleChange}/>{""}</th>
                     
                   </tr>
                   
                   <tr>
                     <th><label htmlFor="sredni_koszt_naprawy">Average repair price: </label></th>
                     <th>
-                      <input style={{float:"left"}} type="number" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/>
+                      <Input bsSize="sm" style={{float:"left", width:"15vw"}} type="number" min="0" name="sredni_koszt_naprawy" id="sredni_koszt_naprawy" value={formData.sredni_koszt_naprawy} onChange={handleChange}/>
                       <span id="sredni_koszt_naprawyVisibility" style={{float:"left", marginLeft:"2%", color:"red"}}>insert a price that is in between {repairMin}$ - {repairMax}$</span>
                     </th>
                     
@@ -651,7 +647,7 @@ const Tables = () => {
                   <tr>
                     <th>Producer</th>
                     <th>
-                      <select id="producer" name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
+                      <Input bsSize="sm" style={{width:"15vw"}} type="select" id="producer" name="producer" onChange={(e) => setFilterProducerFunction(e.target.value)}>
                         <option value="null"></option>
                         {Array.isArray(producers) &&
                           producers !== undefined &&
@@ -660,7 +656,7 @@ const Tables = () => {
                               {element.producer}
                             </option>
                           ))}
-                      </select>
+                      </Input>
                     </th>
                   </tr>
 
@@ -668,12 +664,11 @@ const Tables = () => {
                 <tfoot>
                   <tr>
                     <th colSpan={3} style={{textAlign:"center"}}>
-                      <Button type="submit" disabled={topTableTextColor === "red"} color="primary">Wyślij</Button>
+                      <Button onClick={() =>{handleSubmitForm(); handleSwitchButton(); setFilterProducer("null")}} disabled={topTableTextColor === "red"} color="primary">Insert new car</Button>
                     </th>
                   </tr>
                 </tfoot>
               </Table>
-            </form>
 
 
 

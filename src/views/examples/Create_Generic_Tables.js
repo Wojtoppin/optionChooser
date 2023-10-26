@@ -115,6 +115,7 @@ const Create_Generic_Tables = (props) => {
       new_rows = new_rows.filter((dupa,index) => index !== deleteIndex)
       setOpened([...opened.slice(0, -1)]);
     }
+    props.setGeneric_table(new_rows);
 
     setRows(new_rows)
   }
@@ -131,6 +132,7 @@ const Create_Generic_Tables = (props) => {
         };
 
         checkForRedBorders(updatedRows)
+        props.setGeneric_table(updatedRows)
 
         return updatedRows
       });
@@ -143,6 +145,8 @@ const Create_Generic_Tables = (props) => {
           ...updatedRows[index],
           type: event.target.value,
         };
+        props.setGeneric_table(updatedRows)
+
         return updatedRows
       });
     }
@@ -154,6 +158,7 @@ const Create_Generic_Tables = (props) => {
           ...updatedRows[index],
           sorting: event.target.value,
         };
+        props.setGeneric_table(updatedRows)
         return updatedRows
       });
     }
@@ -544,8 +549,8 @@ const Create_Generic_Tables = (props) => {
                   </th>
                   <th>
                     <Input type="select" style={{color:"#16161D", borderColor:"#5e72e4"}} onChange={(event) => handleChange(index, 3, event)} disabled={index === 0? true:false}>
-                      {element.type === "number" && <option selected={element.sorting === "ASC"}>Incrementing</option>}
-                      {element.type === "number" && <option selected={element.sorting === "DESC"}>Decrementing</option>}
+                      {element.type === "number" && <option selected={element.sorting === "ASC"}>ASC</option>}
+                      {element.type === "number" && <option selected={element.sorting === "DESC"}>DESC</option>}
                       <option selected={element.sorting === "don't show as a chart variable"}>don't show as a chart variable</option>
                     </Input>
                   </th>
@@ -561,7 +566,7 @@ const Create_Generic_Tables = (props) => {
                 <th colSpan={5} style={{textAlign:"center"}}>
                   <Button color="primary"
                    disabled={hasRedColor?true:false}
-                    onClick={() => {props.setGeneric_table(rows); handleChangeCurrentAction(2)}}>Send</Button>
+                    onClick={() => { handleChangeCurrentAction(2)}}>Send</Button>
                 </th>
               </tr>
             </tfoot>

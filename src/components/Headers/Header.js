@@ -46,7 +46,7 @@ const Header = (props) => {
                           style={{ width: "15vw" }}
                           min={props.priceMin}
                           max={props.priceMax}
-                          step={1}
+                          step={100}
                           value={props.priceRange}
                           onChange={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 1)}
                           onChangeCommitted={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 1)}
@@ -62,7 +62,7 @@ const Header = (props) => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       
-                      <span className="text-danger mr-2">
+                      <span className=" mr-2">
                          {props.priceRange[0] + "$ - " + props.priceRange[1]}$
                       </span>
                     </p>
@@ -88,7 +88,7 @@ const Header = (props) => {
 
                             min={props.courseMin}
                             max={props.courseMax}
-                            step={1}
+                            step={100}
                             value={props.courseRange}
                             onChange={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 2)}
                             onChangeCommitted={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 2)}
@@ -105,7 +105,7 @@ const Header = (props) => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       {/* {"Cars: "} */}
-                      <span className="text-danger mr-2">
+                      <span className="mr-2">
                          {props.courseRange[0] + "km - " + props.courseRange[1]}km
                       </span>
                     </p>
@@ -133,7 +133,7 @@ const Header = (props) => {
                             style={{ width: "15vw" }}
                             min={props.repairMin}
                             max={props.repairMax}
-                            step={1}
+                            step={10}
                             value={props.repairRange}
                             onChange={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 3)}
                             onChangeCommitted={(event, newValue, activeThumb) => props.handleNewSliderChange(event, newValue, activeThumb, 3)}
@@ -149,7 +149,7 @@ const Header = (props) => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       
-                      <span className="text-danger mr-2">
+                      <span className=" mr-2">
                          {props.repairRange[0] + "$ - " + props.repairRange[1]}$
                       </span>
                     </p>
