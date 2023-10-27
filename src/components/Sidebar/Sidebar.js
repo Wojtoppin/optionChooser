@@ -159,9 +159,9 @@ const Sidebar = (props) => {
           </NavbarBrand>
         ) : null}
         <Collapse navbar isOpen={collapseOpen}>
-
+{/* 
           <h6 className="navbar-heading text-muted">Cars {"(database)"}</h6>
-          <Nav navbar>{createLinks(routes)}</Nav>
+          <Nav navbar>{createLinks(routes)}</Nav> */}
 
           <hr className="my-3" />
           
