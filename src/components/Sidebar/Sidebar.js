@@ -163,8 +163,6 @@ const Sidebar = (props) => {
           <h6 className="navbar-heading text-muted">Cars {"(database)"}</h6>
           <Nav navbar>{createLinks(routes)}</Nav> */}
 
-          <hr className="my-3" />
-          
           
           <h6 className="navbar-heading text-muted">Generic</h6>
           <Nav navbar>{createGenericLinks(generic_routes)}</Nav>
