@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/best_option_chooser/static/css/main.5e612eee.css",
-    "main.js": "/best_option_chooser/static/js/main.1f9e220f.js",
-    "static/media/fa-solid-900.ttf": "/best_option_chooser/static/media/fa-solid-900.4a2cd718d7031b732e76.ttf",
-    "static/media/fa-brands-400.ttf": "/best_option_chooser/static/media/fa-brands-400.150de8eaa454d669c405.ttf",
-    "static/media/fa-solid-900.woff2": "/best_option_chooser/static/media/fa-solid-900.bb975c966c37455a1bc3.woff2",
-    "static/media/nucleo-icons.svg": "/best_option_chooser/static/media/nucleo-icons.01ebecaf50461162d4bc.svg",
-    "static/media/fa-brands-400.woff2": "/best_option_chooser/static/media/fa-brands-400.e033a13ee751afc1860c.woff2",
-    "static/media/argon-react.png": "/best_option_chooser/static/media/argon-react.0046693da66b68a8892f.png",
-    "static/media/fa-regular-400.ttf": "/best_option_chooser/static/media/fa-regular-400.d87474231f4192884802.ttf",
-    "static/media/fa-regular-400.woff2": "/best_option_chooser/static/media/fa-regular-400.3223dc79c1adee56370b.woff2",
-    "static/media/nucleo-icons.eot": "/best_option_chooser/static/media/nucleo-icons.19abb5402a664606b14c.eot",
-    "static/media/nucleo-icons.ttf": "/best_option_chooser/static/media/nucleo-icons.d6a66724e7a7bf1bba65.ttf",
-    "static/media/nucleo-icons.woff": "/best_option_chooser/static/media/nucleo-icons.c82c9b7c40130b7116d3.woff",
-    "static/media/fa-v4compatibility.ttf": "/best_option_chooser/static/media/fa-v4compatibility.0e3a648be390bd8cb094.ttf",
-    "static/media/nucleo-icons.woff2": "/best_option_chooser/static/media/nucleo-icons.cba267483aa6a7cb6e33.woff2",
-    "static/media/fa-v4compatibility.woff2": "/best_option_chooser/static/media/fa-v4compatibility.68577e40f3e70067b5da.woff2",
-    "index.html": "/best_option_chooser/index.html"
+    "main.css": "/optionChooser/static/css/main.ab7214ed.css",
+    "main.js": "/optionChooser/static/js/main.95a5adce.js",
+    "static/media/fa-solid-900.ttf": "/optionChooser/static/media/fa-solid-900.4a2cd718d7031b732e76.ttf",
+    "static/media/fa-brands-400.ttf": "/optionChooser/static/media/fa-brands-400.150de8eaa454d669c405.ttf",
+    "static/media/fa-solid-900.woff2": "/optionChooser/static/media/fa-solid-900.bb975c966c37455a1bc3.woff2",
+    "static/media/nucleo-icons.svg": "/optionChooser/static/media/nucleo-icons.01ebecaf50461162d4bc.svg",
+    "static/media/fa-brands-400.woff2": "/optionChooser/static/media/fa-brands-400.e033a13ee751afc1860c.woff2",
+    "static/media/argon-react.png": "/optionChooser/static/media/argon-react.0046693da66b68a8892f.png",
+    "static/media/fa-regular-400.ttf": "/optionChooser/static/media/fa-regular-400.d87474231f4192884802.ttf",
+    "static/media/fa-regular-400.woff2": "/optionChooser/static/media/fa-regular-400.3223dc79c1adee56370b.woff2",
+    "static/media/nucleo-icons.eot": "/optionChooser/static/media/nucleo-icons.19abb5402a664606b14c.eot",
+    "static/media/nucleo-icons.ttf": "/optionChooser/static/media/nucleo-icons.d6a66724e7a7bf1bba65.ttf",
+    "static/media/nucleo-icons.woff": "/optionChooser/static/media/nucleo-icons.c82c9b7c40130b7116d3.woff",
+    "static/media/fa-v4compatibility.ttf": "/optionChooser/static/media/fa-v4compatibility.0e3a648be390bd8cb094.ttf",
+    "static/media/nucleo-icons.woff2": "/optionChooser/static/media/nucleo-icons.cba267483aa6a7cb6e33.woff2",
+    "static/media/fa-v4compatibility.woff2": "/optionChooser/static/media/fa-v4compatibility.68577e40f3e70067b5da.woff2",
+    "index.html": "/optionChooser/index.html"
   },
   "entrypoints": [
-    "static/css/main.5e612eee.css",
-    "static/js/main.1f9e220f.js"
+    "static/css/main.ab7214ed.css",
+    "static/js/main.95a5adce.js"
   ]
 }
