@@ -1,8 +1,22 @@
-# [Option chooser]
+# Option chooser
 
 [![Alt text](https://img.youtube.com/vi/xocutY34b50/maxresdefault.jpg)](https://www.youtube.com/watch?v=xocutY34b50&autoplay=1)
 
 Welcome to Option Chooser - a tool to help you make decisions based on specified properties.
+
+## Table of Contents
+- [Project Demo](#project-demo)
+- [Introduction](#introduction)
+- [How It Works](#how-it-works)
+  - [Insert Data](#insert-data)
+  - [Initiate Processing](#initiate-processing)
+  - [Data Analysis](#data-analysis)
+  - [Finalize Selection](#finalize-selection)
+  - [Chart Analysis](#chart-analysis)
+- [Project Usability](#project-usability)
+- [Getting Started](#getting-started)
+- [Contributing](#contributing)
+
 
 ## Project Demo
 
@@ -54,3 +68,6 @@ To use Option Chooser, follow these steps:
 
    ```bash
    npm start
+
+## Contributing
+We welcome contributions! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request.
