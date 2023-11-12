@@ -44,3 +44,13 @@ To use Option Chooser, follow these steps:
 
    ```bash
    git clone https://github.com/wojtoppin/optionChooser.git
+    
+2. Install dependencies:
+
+   ```bash
+   cd optionChooser
+   npm install
+3. Start the application:
+
+   ```bash
+   npm start
