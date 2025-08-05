@@ -3,7 +3,9 @@
 [![Alt text](https://img.youtube.com/vi/xocutY34b50/maxresdefault.jpg)](https://www.youtube.com/watch?v=xocutY34b50&autoplay=1)
 
 Welcome to Option Chooser - a tool to help you make decisions based on specified properties.
+
 ---
+
 ## Table of Contents
 - [Project Demo](#project-demo)
 - [Introduction](#introduction)
@@ -13,6 +15,7 @@ Welcome to Option Chooser - a tool to help you make decisions based on specified
 - [Contributing](#contributing)
 
 ---
+
 ## Project Demo
 
 Check out the live demo: [Option Chooser Demo](https://wojtoppin.github.io/optionChooser)
@@ -20,7 +23,9 @@ Check out the live demo: [Option Chooser Demo](https://wojtoppin.github.io/optio
 ## Introduction
 
 Option Chooser is a React-based project currently in the process of development. It utilizes the [Argon Dashboard React](https://www.creative-tim.com/product/argon-dashboard-react?ref=adr-github-readme) template by Creative Tim.
+
 ---
+
 ## How It Works
 
 1. **Insert Data:**
@@ -37,7 +42,9 @@ Option Chooser is a React-based project currently in the process of development.
 
 5. **Chart Analysis:**
    - A chart is displayed, showcasing the best option based on your specified properties. You can change the sorting properties by clicking on the property names above the chart.
+
 ---
+
 ## Project Usability
 
 Option Chooser is designed to assist you in decision-making across various scenarios, such as:
@@ -53,16 +60,23 @@ To use Option Chooser, follow these steps:
 
    ```bash
    git clone https://github.com/wojtoppin/optionChooser.git
+   ```
 
 2. Install dependencies:
 
    ```bash
    cd optionChooser
    npm install
+   ```
+
 3. Start the application:
 
    ```bash
    npm start
+   ```
+
+---
 
 ## Contributing
+
 We welcome contributions! If you find any issues or have ideas for improvements, feel free to open an issue or submit a pull request.
