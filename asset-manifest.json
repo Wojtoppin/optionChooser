@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.css": "/optionChooser/static/css/main.ab7214ed.css",
-    "main.js": "/optionChooser/static/js/main.db5490fa.js",
+    "main.css": "/optionChooser/static/css/main.069bef77.css",
+    "main.js": "/optionChooser/static/js/main.6fdc07b5.js",
     "static/media/fa-solid-900.ttf": "/optionChooser/static/media/fa-solid-900.4a2cd718d7031b732e76.ttf",
     "static/media/fa-brands-400.ttf": "/optionChooser/static/media/fa-brands-400.150de8eaa454d669c405.ttf",
     "static/media/fa-solid-900.woff2": "/optionChooser/static/media/fa-solid-900.bb975c966c37455a1bc3.woff2",
-    "static/media/nucleo-icons.svg": "/optionChooser/static/media/nucleo-icons.01ebecaf50461162d4bc.svg",
+    "static/media/nucleo-icons.svg": "/optionChooser/static/media/nucleo-icons.95fa360c1c73431a0f9a.svg",
     "static/media/fa-brands-400.woff2": "/optionChooser/static/media/fa-brands-400.e033a13ee751afc1860c.woff2",
     "static/media/argon-react.png": "/optionChooser/static/media/argon-react.0046693da66b68a8892f.png",
     "static/media/fa-regular-400.ttf": "/optionChooser/static/media/fa-regular-400.d87474231f4192884802.ttf",
@@ -19,7 +19,7 @@
     "index.html": "/optionChooser/index.html"
   },
   "entrypoints": [
-    "static/css/main.ab7214ed.css",
-    "static/js/main.db5490fa.js"
+    "static/css/main.069bef77.css",
+    "static/js/main.6fdc07b5.js"
   ]
 }
