@@ -45,7 +45,7 @@ import Header from "components/Headers/Header.js";
 import classnames from "classnames";
 // javascipt plugin for creating charts
 import Chart from "chart.js";
-import { Line} from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import Best_Element from "../Best_Element";
 import * as XLSX from 'xlsx';
 
