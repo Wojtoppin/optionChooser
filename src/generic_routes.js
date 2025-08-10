@@ -5,7 +5,7 @@
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com/product/argon-dashboard-react)
 * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Create_Generic_Tables from "views/examples/Create_Generic_Tables";
+import Create_Generic_Tables from "views/examples/Create_Generic_Tables.jsx";
 
 var generic_routes = [
   {
@@ -23,7 +23,7 @@ var generic_routes = [
     name: "Create Your Own Chart",
     icon: "ni ni-chart-bar-32",
     component: <Create_Generic_Tables />,
-    layout: "/admin",
+    layout: "/optionChooser",
   },
 ];
 export default generic_routes;

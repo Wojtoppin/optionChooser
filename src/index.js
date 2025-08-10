@@ -5,7 +5,7 @@
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com/product/argon-dashboard-react)
 * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
@@ -35,8 +35,7 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/optionChooser/*" element={<AdminLayout />} />
-      <Route path="/optionChooser/*" element={<AuthLayout />} />
-      <Route path="*" element={<Navigate to="/optionChooser/generic/new_tables" replace />} />
+      <Route path="*" element={<Navigate to="/optionChooser/index" replace />} />
     </Routes>
   </BrowserRouter>
 );

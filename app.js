@@ -1,10 +1,7 @@
 const express = require('express');
 const app = express();
-const db = require('./db.js');
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const fs = require('fs');
+const path = require('path');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -14,147 +11,69 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+// Load data from JSON file once at startup
+const dataPath = path.join(__dirname, 'CARS_DATA.json');
+let carsData = { producer: [], samochody: [] };
 
+try {
+  carsData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+} catch (err) {
+  console.error('Could not load CARS_DATA.json:', err);
+}
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-// -------database-------
+// Get all cars with producer name
 app.get('/data', (req, res) => {
-  const sql = `SELECT samochody.ID, name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, Producer.producer
-  FROM samochody
-  JOIN Producer ON Producer.id = samochody.producer_id`;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;  
-    }
-    res.json(results);
+  const result = carsData.samochody.map(car => {
+    const producer = carsData.producer.find(p => p.ID === car.producer_id);
+    return {
+      ...car,
+      producer: producer ? producer.producer : null
+    };
   });
-});
-app.get('/data/:direction/:code/', (req, res) => {
-  const code = req.params.code;
-  const direction = req.params.direction;
-  const sql = `SELECT samochody.ID, name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, Producer.producer
-  FROM samochody
-  JOIN Producer ON Producer.id = samochody.producer_id ORDER BY ${code} ${direction}`;
-  db.query(sql, [code],(err, results) => {
-    console.log(sql)
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;  
-    }
-    res.json(results);
-  });
+  res.json(result);
 });
 
-
-app.post('/addData', (req, res) => {
-  const { name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, producer_id } = req.body;
-
-  if (!name || isNaN(parseFloat(cena)) || isNaN(parseInt(przebieg)) || isNaN(parseFloat(sredni_koszt_naprawy))|| isNaN(parseFloat(producer_id))) {
-    return res.status(400).json({ error: 'Invalid data format' });
-  }
-  const sql = `INSERT INTO samochody (name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, producer_id) VALUES (?, ?, ?, ?, ?, ?) `;
-  
-
-  db.query(sql, [name, cena, przebieg, klimatyzacja, sredni_koszt_naprawy, producer_id],(err, results) => {
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      console.log(sql)
-      return;  
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.json({ message: 'Data inserted successfully' });
-  });
-});
-
-
-//----------Producer------------
-
+// Get all producers with count of cars
 app.get('/producent', (req, res) => {
-  const sql = `SELECT Producer.id, Producer.producer, COUNT(samochody.producer_id) AS counted
-  FROM Producer
-  LEFT JOIN samochody ON Producer.id = samochody.producer_id
-  GROUP BY Producer.id, Producer.producer ORDER BY counted DESC`;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;  
-    }
-    res.json(results);
-  });
+  const result = carsData.producer.map(prod => {
+    const counted = carsData.samochody.filter(car => car.producer_id === prod.ID).length;
+    return {
+      id: prod.ID,
+      producer: prod.producer,
+      counted
+    };
+  }).sort((a, b) => b.counted - a.counted);
+  res.json(result);
 });
 
-//----------weight------------
-
-app.get('/weight', (req, res) => {
-  const sql = `SELECT * FROM weight WHERE 1=1`;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;  
-    }
-    res.json(results);
-  });
+// Get all producers
+app.get('/producers', (req, res) => {
+  res.json(carsData.producer);
 });
 
-
-//---------generic_data------
-app.get('/generic_data', (req, res) => {
-  const sql = 'SELECT * FROM generic_data';
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;  
-    }
-    res.json(results);
-  });
+// Get all cars
+app.get('/cars', (req, res) => {
+  res.json(carsData.samochody);
 });
 
-
-app.post('/generic_data', (req, res) => {
-  const { ID, CLOB } = req.body;
-
-  if (!ID || !CLOB) {
-    return res.status(400).json({ error: 'Invalid data format' });
-  }
-  
-  const sql = 'INSERT INTO generic_data (ID, CLOB) VALUES (?, ?)';
-  
-  db.query(sql, [ID, CLOB], (err, results) => {
-    if (err) {
-      console.error('Error inserting data:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;  
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.json({ message: 'Data inserted successfully' });
-  });
+// Get car by ID
+app.get('/cars/:id', (req, res) => {
+  const car = carsData.samochody.find(c => c.ID === parseInt(req.params.id));
+  if (!car) return res.status(404).json({ error: 'Car not found' });
+  res.json(car);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-// -------/database-------
-
-
+// Get producer by ID
+app.get('/producers/:id', (req, res) => {
+  const producer = carsData.producer.find(p => p.ID === parseInt(req.params.id));
+  if (!producer) return res.status(404).json({ error: 'Producer not found' });
+  res.json(producer);
+});
 
 app.listen(3040, () => {
   console.log('Server is running on port 3040');
